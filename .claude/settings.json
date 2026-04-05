@@ -1,0 +1,11 @@
+{
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
+  "permissions": {
+    "allow": [
+      "Read(//tmp/**)",
+      "Bash(/c/Users/Estera/AppData/Local/pypoetry/Cache/virtualenvs/ml-in-sports-qX3PSQBO-py3.13/Scripts/python.exe -c \":*)"
+    ]
+  }
+}

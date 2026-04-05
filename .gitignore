@@ -1,0 +1,155 @@
+# ──────────────────────────────────────────
+# Python
+# ──────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+.python-version
+
+# uv
+.uv/
+uv.lock
+
+# Poetry (legacy, usuwane w P1)
+poetry.lock
+
+# pytest
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.hypothesis/
+coverage.xml
+*.cover
+.tox/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# ruff
+.ruff_cache/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# ──────────────────────────────────────────
+# Node / TypeScript
+# ──────────────────────────────────────────
+node_modules/
+.next/
+.turbo/
+dist/
+build/
+.cache/
+*.tsbuildinfo
+.pnpm-store/
+.yarn/
+
+# Env files
+.env
+.env.local
+.env.*.local
+.env.production
+.env.development
+.env.test
+
+# ──────────────────────────────────────────
+# Data & Models (never commit)
+# ──────────────────────────────────────────
+data/
+*.parquet
+*.db
+*.sqlite
+*.sqlite3
+*.csv
+*.xlsx
+
+# Model artifacts
+mlruns/
+mlflow/
+models/
+*.pkl
+*.joblib
+*.h5
+*.onnx
+*.pt
+*.pth
+*.safetensors
+
+# Logs
+logs/
+*.log
+
+# Output / artifacts
+output/
+artifacts/
+reports/
+*tmp*
+*temp*
+
+# ──────────────────────────────────────────
+# IDE / Editor
+# ──────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ──────────────────────────────────────────
+# Secrets (NEVER commit)
+# ──────────────────────────────────────────
+*.pem
+*.key
+*.cert
+*.crt
+credentials.json
+secrets.json
+.secrets/
+.doppler/
+
+# ──────────────────────────────────────────
+# Docker
+# ──────────────────────────────────────────
+.docker/
+
+# ──────────────────────────────────────────
+# OS
+# ──────────────────────────────────────────
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
