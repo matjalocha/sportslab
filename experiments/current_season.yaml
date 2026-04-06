@@ -1,0 +1,62 @@
+name: "Current Season 2025/26 Backtest"
+description: "Train on 2122-2425, test on 2526 (current season to date)"
+
+data:
+  leagues:
+    - "ENG-Premier League"
+    - "ESP-La Liga"
+    - "GER-Bundesliga"
+    - "ITA-Serie A"
+    - "FRA-Ligue 1"
+  seasons: ["2122", "2223", "2324", "2425", "2526"]
+  markets: ["1x2"]
+
+models:
+  - name: lightgbm
+    type: lightgbm
+    params:
+      n_estimators: 300
+      learning_rate: 0.05
+      max_depth: 6
+
+  - name: xgboost
+    type: xgboost
+    params:
+      n_estimators: 300
+      learning_rate: 0.05
+      max_depth: 6
+
+calibration:
+  methods: [temperature, platt, isotonic]
+  selection: walk_forward
+
+kelly:
+  fraction: 0.25
+  max_exposure_per_match: 0.03
+  max_exposure_per_round: 0.15
+  shrinkage: true
+
+evaluation:
+  walk_forward:
+    train_seasons: 4
+    test_seasons: 1
+  metrics:
+    - log_loss
+    - ece
+    - brier_score
+    - clv_mean
+    - roi
+    - sharpe
+    - max_drawdown
+    - max_losing_streak
+  pinnacle_source: football-data
+
+report:
+  format: [html, terminal]
+  include:
+    - calibration_curves
+    - ece_per_league
+    - clv_timeseries
+    - roi_cumulative
+    - model_comparison_table
+    - kelly_stake_distribution
