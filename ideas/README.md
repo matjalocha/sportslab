@@ -1,22 +1,25 @@
 # Ideas — Plan Produktyzacji ML-in-Sports
 
-**Status:** Faza 0 — Foundations (planowanie)
-**Ostatnia aktualizacja:** 2026-04-05
-**Owner:** Lead / Founder-Engineer
+**Status:** R1 — Clean Code (in progress)
+**Ostatnia aktualizacja:** 2026-04-06
+**Owner:** Mateusz Jałocha (solo founder) + Claude Code
 
-Ten folder zawiera kompletny plan przekształcenia projektu `ml_in_sports` z lokalnego research repo w dochodowy biznes. Struktura zaprojektowana przez 6-osobowy zespół ekspertów.
+Ten folder zawiera kompletny plan przekształcenia projektu `ml_in_sports` z lokalnego research repo w dochodowy biznes. Oryginalna struktura zaprojektowana dla 6-osobowego zespołu — **aktywna roadmapa** dostosowana do realiów solo founder.
 
 ---
 
 ## Nawigacja
 
-### Dokumenty strategiczne
+### ⭐ Aktywna roadmapa
+- **[solo_founder_roadmap.md](solo_founder_roadmap.md)** — Oficjalny plan pracy (R0–R6), timeline, priorytety, koszty. **Czytaj to najpierw.**
+
+### Dokumenty strategiczne (reference)
 - [prompts.md](prompts.md) — Historia promptów użytkownika (reprodukowalność)
 - [vision.md](vision.md) — Misja, problem, propozycja wartości
-- [team.md](team.md) — 6 profili + zakres odpowiedzialności + braki kompetencyjne
+- [team.md](team.md) — 6 profili (reference dla subagentów Claude Code)
 - [ip_moat.md](ip_moat.md) — Autorskie podejście i przewaga konkurencyjna
-- [tech_stack.md](tech_stack.md) — **Single source of truth dla całego stacka technologicznego**
-- [phase_transitions.md](phase_transitions.md) — Kryteria wejścia/wyjścia z każdej fazy
+- [tech_stack.md](tech_stack.md) — Stack technologiczny (przefiltrowany w solo_founder_roadmap.md)
+- [phase_transitions.md](phase_transitions.md) — Kryteria przejścia (oryginalne, do adaptacji)
 
 ### Fazy rozwoju
 - [phase_0_foundations/](phase_0_foundations/) — Zespół, narzędzia, konta bukmacherskie (2-4 tyg.)
@@ -65,12 +68,13 @@ Każdy plik `tasks.md` zawiera tabelę:
 
 | Faza | Status | Widełki | Rozpoczęcie | Zakończenie |
 |------|--------|---------|-------------|-------------|
-| P0 — Foundations | 📋 Planning | 2-4 tyg. | — | — |
-| P1 — Code Cleanup | ⏳ Pending | 4-8 tyg. | — | — |
-| P2 — New Features | ⏳ Pending | 6-10 tyg. | — | — |
-| P3 — More Leagues | ⏳ Pending | 6-10 tyg. | — | — |
-| P4 — More Sports | ⏳ Pending | 20-32 tyg. | — | — |
-| P5 — Automation | ⏳ Pending | 6-10 tyg. | — | — |
-| P6 — Product & App | ⏳ Pending | 16-24 tyg. | — | — |
+| R0 — Foundations | ✅ Done | 1 tyg. | 2026-04-05 | 2026-04-05 |
+| R1 — Clean Code | 🔄 In Progress | 4-6 tyg. | 2026-04-05 | — |
+| R2 — Better Models | ⏳ Pending | 6-8 tyg. | — | — |
+| R3 — Proof of Edge | ⏳ Pending | 8-16 tyg. | — | — |
+| R4 — Automation | ⏳ Pending | 2-3 tyg. | — | — |
+| R5a — More Leagues | ⏳ Pending | 6-10 tyg. | — | — |
+| R5b — More Sports | ⏳ Pending | 6-10 tyg. | — | — |
+| R6 — Product | ⏳ Pending | 8-12 tyg. | — | — |
 
 > Widełki są **orientacyjne**, nie deadline'y. Fazy kończą się gdy DoD spełnione. Niektóre fazy mogą iść równolegle (np. P3 i P4.1 po P2).

@@ -390,3 +390,68 @@ Konserwatywny target:
 3. Czy ma być free trial dla wszystkich SKU czy tylko dla B2C?
 4. Czy oferujemy multi-SKU bundle pricing (np. Value Feed + Data Lake = -15%)?
 5. Pricing EUR czy USD czy lokalnie per kraj?
+
+---
+
+## Market Pricing Validation (P0.25 / SPO-29, 2026-04-05)
+
+**Cel walidacji:** sprawdzenie czy draft pricing SKU 1-3 (API tier) jest zakorzeniony w realnych stawkach rynkowych, czy jest oderwany od konkurencji.
+
+**Metoda:** Live fetch pricing pages konkurentów. Pełna analiza: [docs/pricing_validation.md](../../docs/pricing_validation.md).
+
+### Vendor data (confirmed 2026-04-05)
+
+| Vendor | Product | Entry tier | Mid tier | Top tier | Coverage |
+|---|---|---:|---:|---:|---|
+| [API-Football](https://www.api-football.com/pricing) | Sports stats API | Free (100/d) | $19 Pro (7.5k/d) | $39 Mega (150k/d) | 11 sportów |
+| [The Odds API](https://the-odds-api.com/#get-access) | Odds aggregation | Free (500/m) | $30 20K | $249 15M | 70+ sportów, 40+ booków |
+| [Sportmonks](https://www.sportmonks.com/football-api/plans-pricing/) | Football data API | €29 Starter (5 lig) | €99 Growth (30 lig) | €249 Pro (120 lig) | Football only |
+| [Hudl Statsbomb](https://www.hudl.com/products/statsbomb) | Event data, tracking | n/a (enterprise) | n/a | n/a | 190+ kompetycji, 330+ klubów |
+
+### Head-to-head z SportsLab draft pricing
+
+| SKU | SportsLab draft | Najbliższy konkurent | Ratio |
+|---|---|---|---|
+| **SKU 1 Basic** (1k calls) | €99/mo | The Odds API 20K: €27.6/mo (20k calls) | **3.6× premium, 20× mniej calls** |
+| **SKU 1 Pro** (10k calls) | €299/mo | The Odds API 100K: €54.5/mo | **5.5× premium** |
+| **SKU 2 Researcher** (100 q/d) | €49/mo | Sportmonks Starter: €29/mo (5 lig) | **1.7× premium** |
+| **SKU 2 Professional** (1k q/d) | €199/mo | Sportmonks Growth: €99/mo (30 lig) | **2.0× premium** |
+| **SKU 3 Starter** (1k calls) | €79/mo | Brak direct competitor (calibrated probabilities) | Greenfield |
+
+### Kluczowe wnioski
+
+1. **[PEWNE] SKU 4 (Club Analytics, €499-2999/mo) jest najlepiej spozycjonowane.** Statsbomb/Hudl, Wyscout, Opta — wszyscy ukrywają pricing bo targetują enterprise. Mid-market kluby (Ekstraklasa, Championship lower, 2. Bundesliga) są **genuinely underserved**. To jest prawdziwy revenue driver portfolio (€18.5k MRR target w draft), a nie API SKUs.
+
+2. **[RYZYKO] SKU 1-3 są 2-5× nad market rates dla API-first tier.** Użytkownik musi świadomie wybrać:
+   - **Premium positioning** — zostać przy €99-999, ale wymaga publicznego CLV tracking od teraz (6-12 miesięcy CLV history jako social proof przed launch P6, inaczej konwersja będzie znikoma)
+   - **Market alignment** — obniżka SKU 1-3 o 30-50%
+   - **Re-pricing po jednostce wartości** — "€49 za 200 value bets" zamiast "€99 za 1000 API calls" (zmiana osi porównania z commodity na analytics)
+
+3. **[HIPOTEZA] SKU 3 Probabilities API może być greenfield.** Nikt z konkurentów nie ship'uje **calibrated probabilities z ECE metric via transparent API pricing**. Ale diferrentiator musi być **widoczny** na landing page (ECE receipts, model version tracking, historical predictions), inaczej buyer wybiera API-Football za €17.5 i zakłada że "predictions" to to samo.
+
+4. **[RYZYKO] Zero free trial = zero signups.** Wszyscy konkurenci (API-Football, The Odds API, Sportmonks) mają free tier lub 14-day trial. SportsLab API SKU bez free trial w tym rynku = 0 konwersji.
+
+5. **[HIPOTEZA] SKU 2 Professional (€199) prawdopodobnie do obniżenia do €149/mo.** 2× cena Sportmonks Growth z mniejszą capacity API. Multi-sport premium jest defensible tylko jeśli coverage jest faktycznie szerszy.
+
+### Rekomendowane akcje (pre-P6)
+
+| Akcja | Priorytet | Termin |
+|---|---|---|
+| Trackuj CLV publicznie od **teraz** (paper-trading), nawet bez klientów | Wysoki | Start w P2 (CLV tracking infra) |
+| Rozstrzygnij premium vs market positioning dla SKU 1-3 | Średni | Decyzja przed P6.0 (customer discovery) |
+| Zweryfikuj co dokładnie "predictions" dostarcza API-Football za €17.5 | Niski | P6.0 |
+| Dodaj free trial do każdego SKU 1-3 specification | Wysoki | P6.1 planning |
+| Zostaw SKU 4 pricing bez zmian (€499-2999/mo) | — | Już OK |
+
+### Scope limitations walidacji
+
+Ta walidacja **NIE jest** pełnym pricing research z ideas/phase_0_foundations/tasks.md. Pokrywa tylko SKU 1-3 (API tier, gdzie dane publiczne) + SKU 4 (mid-market clubs, gdzie brak danych = insight sam w sobie). **Nie pokrywa:**
+
+- Stats Perform, Opta, Sportradar, Genius Sports (enterprise-only, pricing po "contact sales")
+- SKU 5 Coach Multi-Sport (brak direct comparables w transparentnej warstwie)
+- SKU 6 Custom Research (pricing zależy od relationship, nie od stawki rynkowej)
+- SKU 7 Backtest-as-a-Service (niche, brak direct competitors)
+- SKU 8 White-Label (revenue share, nie stawka)
+- SKU 9 Telegram B2C (fragmentowany rynek tipster bots)
+
+Pełny research dla tych SKU powinien nastąpić w **P6.0 (customer discovery)** — wtedy będą też dostępni klienci do wywiadów, co daje lepsze dane niż desk research.

@@ -1,0 +1,8 @@
+# Placeholder — infra/ zostanie wypełniony w Phase 5 (Automation).
+#
+# Docelowa zawartość:
+#   - docker/   — Dockerfiles per app
+#   - prefect/  — Prefect flow deployment specs
+#   - nginx/    — reverse proxy config
+#   - grafana/  — dashboards as JSON
+#   - terraform/ (opcjonalnie) — IaC dla Hetzner + Cloudflare

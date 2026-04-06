@@ -1,0 +1,134 @@
+[project]
+name = "sportslab"
+version = "0.0.0"
+description = "SportsLab monorepo root (workspace manifest, not a distributable package)"
+readme = "README.md"
+requires-python = ">=3.11"
+
+# Workspace members are declared here so a plain `uv sync --all-extras --dev`
+# installs them into the root .venv. See docs/architecture/adr-0001-uv-workspace-install.md.
+dependencies = [
+    "ml-in-sports",
+]
+
+[project.optional-dependencies]
+# Forward the ml-in-sports optional extras so `uv sync --all-extras --dev`
+# installs TabPFN + PyTorch. Without this, only the base deps are installed.
+ml = [
+    "ml-in-sports[ml]",
+]
+
+[tool.uv.workspace]
+members = [
+    "packages/*",
+    "apps/*",
+]
+
+[tool.uv.sources]
+ml-in-sports = { workspace = true }
+
+[dependency-groups]
+dev = [
+    "ruff>=0.6.0",
+    "mypy>=1.11",
+    "pandas-stubs>=2.0,<3.0",
+    "types-requests>=2.31,<3.0",
+    "types-tqdm>=4.67,<5.0",
+    "types-pyyaml>=6.0,<7.0",
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+    "pre-commit>=3.8",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+extend-exclude = ["research/**/*.ipynb", ".venv", "dist", "build"]
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "UP",  # pyupgrade
+    "N",   # pep8-naming
+    "SIM", # flake8-simplify
+    "TID", # flake8-tidy-imports
+    "RUF", # ruff-specific
+]
+ignore = [
+    "E501",  # line too long (handled by formatter)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["N802", "N803", "N806"]  # test naming conventions differ; X/y are standard ML variable names
+"**/models/ensemble/**/*.py" = ["N803", "N806"]  # X/y are standard scikit-learn API parameter names
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+exclude = [
+    "research/",
+    "build/",
+    "dist/",
+]
+
+[[tool.mypy.overrides]]
+module = [
+    "scipy.*",
+    "sklearn.*",
+    "lightgbm.*",
+    "xgboost.*",
+    "tabpfn.*",
+    "plotly.*",
+    "jinja2.*",
+]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+disallow_untyped_defs = false
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["packages", "apps"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "-ra",
+    "--strict-markers",
+    "--strict-config",
+    "--cov-report=term-missing",
+]
+
+[tool.coverage.run]
+source = ["packages", "apps"]
+omit = [
+    "*/tests/*",
+    "*/_archive/*",
+    "research/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "raise NotImplementedError",
+    "if TYPE_CHECKING:",
+    "if __name__ == .__main__.:",
+]
+precision = 1
+show_missing = true

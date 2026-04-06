@@ -138,7 +138,7 @@ Background:
   - Dark mode secondary: #111118
   - Dark mode tertiary:  #1A1A24
   - Light mode:          #FFFFFF / #F9FAFB
-  
+
 Text:
   - Dark mode primary:   #E5E7EB
   - Dark mode secondary: #9CA3AF

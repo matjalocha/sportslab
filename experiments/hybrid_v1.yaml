@@ -1,0 +1,63 @@
+name: "Hybrid v1 (5 Leagues)"
+description: >
+  Walk-forward backtest of LightGBM, XGBoost, and stacking hybrid
+  across Top-5 European leagues with real features data.
+
+data:
+  leagues:
+    - "ENG-Premier League"
+    - "ESP-La Liga"
+    - "GER-Bundesliga"
+    - "ITA-Serie A"
+    - "FRA-Ligue 1"
+  seasons: ["2122", "2223", "2324"]
+  markets: ["1x2"]
+
+models:
+  - name: LightGBM
+    type: lightgbm
+    params:
+      n_estimators: 500
+      learning_rate: 0.05
+      num_leaves: 31
+  - name: XGBoost
+    type: xgboost
+    params:
+      n_estimators: 500
+      learning_rate: 0.05
+      max_depth: 6
+  - name: Hybrid ENS
+    type: stacking
+    base_models: [LightGBM, XGBoost]
+    meta_learner: logistic_regression
+
+calibration:
+  methods: [temperature, platt, isotonic]
+  selection: walk_forward
+
+kelly:
+  fraction: 0.25
+  max_exposure_per_match: 0.03
+  max_exposure_per_round: 0.15
+  shrinkage: true
+
+evaluation:
+  walk_forward:
+    train_seasons: 2
+    test_seasons: 1
+  metrics:
+    - log_loss
+    - ece
+    - brier_score
+    - clv_mean
+    - roi
+    - sharpe
+    - max_drawdown
+    - max_losing_streak
+
+report:
+  format: [html, terminal]
+  include:
+    - clv_timeseries
+    - roi_cumulative
+    - model_comparison_table

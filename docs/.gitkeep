@@ -1,0 +1,9 @@
+# Placeholder — docs/ zostanie wypełniony przez całą trajektorię projektu.
+#
+# Docelowa zawartość:
+#   - architecture/        — ADRs, system design docs
+#   - api/                 — API reference (generowane z OpenAPI)
+#   - sports/              — per-sport documentation (P4+)
+#   - leagues/             — per-league documentation (P3+)
+#   - tech_debt_audit.md   — raport P0.19
+#   - math_audit.md        — raport P0.20

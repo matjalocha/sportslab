@@ -5,7 +5,17 @@
   "permissions": {
     "allow": [
       "Read(//tmp/**)",
-      "Bash(/c/Users/Estera/AppData/Local/pypoetry/Cache/virtualenvs/ml-in-sports-qX3PSQBO-py3.13/Scripts/python.exe -c \":*)"
+      "Bash(/c/Users/Estera/AppData/Local/pypoetry/Cache/virtualenvs/ml-in-sports-qX3PSQBO-py3.13/Scripts/python.exe -c \":*)",
+      "WebFetch",
+      "WebSearch",
+      "mcp__linear-sportslab__list_teams",
+      "mcp__linear-sportslab__get_user",
+      "mcp__linear-sportslab__list_projects",
+      "mcp__linear-sportslab__list_issues",
+      "mcp__linear-sportslab__get_issue",
+      "mcp__linear-sportslab__list_issue_labels",
+      "mcp__linear-sportslab__search_documentation",
+      "mcp__linear-sportslab__research"
     ]
   }
 }

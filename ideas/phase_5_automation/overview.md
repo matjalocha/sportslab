@@ -89,7 +89,7 @@ Cel: przez 30 dni zespół może wyjechać na urlop, a system działa.
 10:00  Push to API cache + notify clients
 11:00  Health check + rollup metrics
 12:00  Daily backup do Backblaze B2
- 
+
 ... przez dzień live:
 - Sofascore lineup scraping 2h przed każdym meczem
 - Live odds monitoring co 15 minut

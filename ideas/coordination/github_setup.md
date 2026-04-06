@@ -306,7 +306,7 @@ updates:
     labels:
       - "dependencies"
       - "python"
-    
+
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
@@ -314,7 +314,7 @@ updates:
     labels:
       - "dependencies"
       - "javascript"
-  
+
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:

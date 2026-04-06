@@ -1,34 +1,65 @@
 # ──────────────────────────────────────────
-# Python
+# .gitignore audit notes (SPO-33, SPO-34)
 # ──────────────────────────────────────────
+# Historical footgun: a bare directory pattern (no leading `/`) matches that
+# directory name RECURSIVELY at any depth. In a monorepo this can silently
+# hide real source code — e.g. `models/` used to shadow
+# `packages/ml-in-sports/src/ml_in_sports/models/` (Kelly math, dataclasses).
+#
+# Rules of thumb when adding entries:
+#   1. Prefer a leading `/` when the pattern should only match at repo root
+#      (e.g. build outputs, data dumps, coverage, MLflow runs).
+#   2. Keep recursive (no `/`) only for patterns that CANNOT legitimately be
+#      source code anywhere — caches, `__pycache__`, IDE dirs, node_modules.
+#   3. Every recursive directory pattern on a plain English word deserves a
+#      one-line comment justifying why it's safe to recurse.
+#   4. Never add `models/` — it was the bug. Trained model files are caught
+#      by extension patterns (*.pkl, *.joblib, *.h5, *.pt, ...).
+
+# ──────────────────────────────────────────
+# Python — caches and compiled artifacts
+# ──────────────────────────────────────────
+# Recursive is safe here: these names cannot be legit Python source.
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
 .Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
 MANIFEST
 
+# Python build outputs — recursive on purpose: `uv build` / `hatch build`
+# emit these per-package (packages/<pkg>/build/, packages/<pkg>/dist/).
+# Narrowing to `/build/` would leak per-package build artifacts into git.
+build/
+dist/
+
+# Setuptools legacy — narrowed to root-only. These names (`lib`, `parts`,
+# `var`, `eggs`, `wheels`, `sdist`, `downloads`, `develop-eggs`) are plausible
+# as Python submodule names inside packages/* and apps/*. uv + hatchling
+# don't emit them at nested levels, so root-only is sufficient.
+/develop-eggs/
+/downloads/
+/eggs/
+/.eggs/
+/lib/
+/lib64/
+/parts/
+/sdist/
+/var/
+/wheels/
+/share/python-wheels/
+
 # Virtual environments
+# Recursive on purpose: we never want a venv committed, and `.venv` / `venv`
+# are not legitimate source identifiers. `env/` and `ENV/` narrowed to
+# root-only because `env` is plausible as a submodule name (e.g. env config).
 .venv/
 venv/
-ENV/
-env/
+/ENV/
+/env/
 .python-version
 
 # uv
@@ -42,7 +73,7 @@ poetry.lock
 .pytest_cache/
 .coverage
 .coverage.*
-htmlcov/
+/htmlcov/
 .hypothesis/
 coverage.xml
 *.cover
@@ -63,11 +94,10 @@ dmypy.json
 # ──────────────────────────────────────────
 # Node / TypeScript
 # ──────────────────────────────────────────
+# Recursive: these names cannot be legit source in a JS/TS workspace.
 node_modules/
 .next/
 .turbo/
-dist/
-build/
 .cache/
 *.tsbuildinfo
 .pnpm-store/
@@ -84,7 +114,10 @@ build/
 # ──────────────────────────────────────────
 # Data & Models (never commit)
 # ──────────────────────────────────────────
-data/
+# `/data/` narrowed to root-only (SPO-34). A nested `packages/foo/data/`
+# — e.g. seed fixtures, test data, team_name_replacements.json siblings —
+# must stay trackable. Large datasets belong outside the repo anyway.
+/data/
 *.parquet
 *.db
 *.sqlite
@@ -93,9 +126,17 @@ data/
 *.xlsx
 
 # Model artifacts
-mlruns/
-mlflow/
-models/
+#
+# NOTE: do NOT add `models/` here — there is a Python subpackage at
+# packages/ml-in-sports/src/ml_in_sports/models/ containing source code
+# (dataclasses, Kelly math). A bare `models/` pattern matches it recursively
+# and makes it untrackable. Trained-model files are caught by the file-extension
+# patterns below. See SPO-33.
+#
+# `/mlruns/` and `/mlflow/` narrowed to root-only (SPO-34): MLflow tracking
+# is single-instance at repo root; nested `mlflow/` subdirs would be legit.
+/mlruns/
+/mlflow/
 *.pkl
 *.joblib
 *.h5
@@ -104,14 +145,23 @@ models/
 *.pth
 *.safetensors
 
-# Logs
-logs/
+# Logs — narrowed to root-only (SPO-34). `logs/` is plausible as a submodule
+# (e.g. a logging helper package) or a docs subdir. The `*.log` glob still
+# catches stray log files at any depth.
+/logs/
 *.log
 
-# Output / artifacts
-output/
-artifacts/
-reports/
+# Output / artifacts / reports — narrowed to root-only (SPO-34).
+# HIGH COLLISION RISK if recursive:
+#   - `reports/` would shadow `docs/reports/` (reporter agent output) and
+#     any future `apps/api/reports/` route module.
+#   - `artifacts/` would shadow CI artifact subdirs and any `packages/*/
+#     artifacts/` fixture dir.
+#   - `output/` would shadow ML pipeline output submodules.
+# Keep root-only so ad-hoc scratch dirs at repo root remain ignored.
+/output/
+/artifacts/
+/reports/
 *tmp*
 *temp*
 
@@ -138,6 +188,10 @@ credentials.json
 secrets.json
 .secrets/
 .doppler/
+
+# MCP project-scope config (may contain tokens in headers)
+.mcp.json
+.mcp.local.json
 
 # ──────────────────────────────────────────
 # Docker

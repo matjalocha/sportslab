@@ -1,0 +1,7 @@
+# Placeholder — apps/ zostanie wypełniony w Phase 5+ (Automation, Product & App).
+#
+# Docelowa zawartość:
+#   - api/        — FastAPI backend (P6)
+#   - web/        — Next.js frontend (P6)
+#   - landing/    — Marketing landing page (P6)
+#   - scheduler/  — Prefect flows (P5)

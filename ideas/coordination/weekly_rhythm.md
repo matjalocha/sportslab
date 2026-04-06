@@ -116,7 +116,7 @@ Linear cycles = 2-tygodniowe sprinty.
 - Daily async standup:
   ```
   ## Daily Standup 2026-04-07
-  
+
   **Yesterday:** Completed XYZ feature, started ABC refactor
   **Today:** Finish ABC refactor, start review on #LIN-123
   **Blockers:** Waiting on design for #LIN-456

@@ -86,44 +86,44 @@
   01:30 — NHL results                                             │
   02:00 — Odds movement (overnight)                               │
   02:30 — Pinnacle closing (już zamknięte mecze)                  │
-  
+
 [Data Quality]
   03:00 — Great Expectations checks
   03:30 — Team name normalization verification
   04:00 — Scrape log audit
-  
+
 [Features]
   04:30 — Materialize features (football)
   05:00 — Materialize features (tennis, basketball, hockey)
   05:30 — CLV tracking compute
-  
+
 [ML Pipeline]
   06:00 — Drift detection (PSI, label drift, odds drift)
   06:30 — If drift OR weekly Sunday → Retrain models
   07:00 — Predictions dla upcoming matches (next 7 days)
   07:30 — Calibration check (ECE per liga, per sport)
-  
+
 [Value Bets Generation]
   08:00 — Hybrid Calibrated Portfolio Kelly — strategy execution
   08:30 — Per-strategy backtests update (rolling)
-  
+
 [Reporting]
   09:00 — Generate MD reports
   09:30 — Generate JSON API cache
   10:00 — Generate PDF reports (for paid customers)
   10:30 — Push to API + notify clients (webhooks, emails)
-  
+
 [Operations]
   11:00 — Backup Postgres → B2
   11:30 — Backup MLflow → B2
   12:00 — Health check rollup
-  
+
 [Live Operations - throughout day]
   Every 2h before match: lineup scraping (Sofascore)
   Every 30m: odds monitoring (value changes)
   Every 1h: in-play research data (not production in P5)
   2h after match end: result scraping + validation
-  
+
 [End of day]
   23:00 — Daily report to Lead (Telegram)
   23:30 — Cost attribution calculation

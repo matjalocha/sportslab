@@ -47,7 +47,7 @@
     away_entity_id TEXT,
     ...
   );
-  
+
   CREATE TABLE match_football_details (
     match_id TEXT PRIMARY KEY REFERENCES matches(match_id),
     home_goals INT,
@@ -55,7 +55,7 @@
     home_xg FLOAT,
     ...
   );
-  
+
   CREATE TABLE match_tennis_details (
     match_id TEXT PRIMARY KEY REFERENCES matches(match_id),
     surface TEXT,

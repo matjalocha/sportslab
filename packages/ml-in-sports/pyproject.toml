@@ -1,0 +1,66 @@
+[project]
+name = "ml-in-sports"
+version = "0.1.0"
+description = "SportsLab core ML package — features, models, processing, sports abstractions."
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [
+    { name = "SportsLab" },
+]
+
+# Runtime deps grow module-by-module as the P1 migration from the research
+# codebase progresses. Version constraints mirror the source repo's style
+# (major version cap). See docs/tech_debt_audit.md for the migration map.
+dependencies = [
+    "numpy>=1.24,<3.0",           # added in SPO-37 (features/rolling_features.py)
+    "pandas>=2.0,<3.0",           # added in SPO-35 (processing/extractors.py)
+    "requests>=2.31,<3.0",        # added in SPO-35
+    "soccerdata>=1.8.8,<2.0.0",   # added in SPO-35
+    "structlog>=24.0,<25.0",       # added in P1.12 (structlog migration)
+    "tqdm>=4.67,<5.0",            # added in SPO-35
+    "pydantic-settings>=2.0,<3.0", # added in SPO-45 (P1.13 centralized config)
+    "alembic>=1.13,<2.0",          # added in SPO-46 (P1.14 Alembic migrations)
+    "sqlalchemy>=2.0,<3.0",        # added in SPO-46 (P1.14 Alembic migrations)
+    "typer>=0.12,<1.0",            # added in P1.5 (CLI entry points)
+    "scikit-learn>=1.4,<2.0",      # R2: calibration (Platt, Isotonic), stacking meta-learner
+    "lightgbm>=4.0,<5.0",          # R2: ensemble member
+    "xgboost>=2.0,<3.0",           # R2: ensemble member
+    "pyyaml>=6.0,<7.0",            # R2: experiment config
+    "plotly>=5.0,<6.0",            # R2: interactive report charts
+    "jinja2>=3.1,<4.0",            # R2: HTML report template
+    "rich>=13.0,<15.0",            # R2: terminal report
+    "pyarrow>=23.0.1",
+]
+
+[project.optional-dependencies]
+# TabPFN is optional because it pulls PyTorch (~110 MB) and a ~1 GB model
+# download on first use. The TabPFNModel wrapper in models/ensemble/registry.py
+# raises ImportError gracefully when tabpfn is not installed.
+ml = [
+    "tabpfn>=6.0,<7.0",            # R2: TabPFN ensemble member (SPO-59)
+]
+
+[project.scripts]
+sl = "ml_in_sports.cli:app"
+
+[build-system]
+requires = ["hatchling>=1.24"]
+build-backend = "hatchling.build"
+
+# Do not consult the root .gitignore when collecting package files.
+# The monorepo root gitignore has a broad `models/` rule for training-artifact
+# directories which incorrectly excludes the `ml_in_sports.models` Python
+# subpackage from sdist/wheel. See SPO-33.
+[tool.hatch.build]
+ignore-vcs = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/ml_in_sports"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "src/ml_in_sports",
+    "tests",
+    "README.md",
+    "pyproject.toml",
+]

@@ -1,0 +1,37 @@
+name: "Quick Test"
+description: >
+  Minimal single-league backtest for fast iteration.
+  Trains LightGBM on EPL 2223, tests on 2324.
+
+data:
+  leagues: ["ENG-Premier League"]
+  seasons: ["2223", "2324"]
+  markets: ["1x2"]
+
+models:
+  - name: LightGBM
+    type: lightgbm
+    params:
+      n_estimators: 100
+      learning_rate: 0.1
+
+evaluation:
+  walk_forward:
+    train_seasons: 1
+    test_seasons: 1
+  metrics:
+    - log_loss
+    - ece
+    - brier_score
+    - clv_mean
+    - roi
+    - sharpe
+    - max_drawdown
+    - max_losing_streak
+
+report:
+  format: [html, terminal]
+  include:
+    - clv_timeseries
+    - roi_cumulative
+    - model_comparison_table

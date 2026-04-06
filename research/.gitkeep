@@ -1,0 +1,9 @@
+# Placeholder — research/ zostanie wypełniony w Phase 1 (Code Cleanup).
+#
+# Docelowa zawartość: notebooks z `c:/Users/Estera/Mateusz/ml_in_sports/notebooks/`,
+# zmigrowane jako NON-PRODUCTION research artifacts.
+#
+# Zasady:
+# - Zero notebooków w produkcji (production code w packages/)
+# - Notebooks są źródłem hipotez, nie deployable'owych pipeline'ów
+# - Każdy notebook ma README z opisem eksperymentu + datą + owner

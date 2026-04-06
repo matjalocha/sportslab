@@ -1,0 +1,38 @@
+name: "TabPFN Comparison"
+description: "TabPFN solo vs LGB vs XGB vs Hybrid (with TabPFN in stacking)"
+
+data:
+  leagues:
+    - "ENG-Premier League"
+  seasons: ["2223", "2324"]
+  markets: ["1x2"]
+
+models:
+  - name: "lightgbm"
+    type: lightgbm
+    params:
+      n_estimators: 200
+      learning_rate: 0.05
+
+  - name: "xgboost"
+    type: xgboost
+    params:
+      n_estimators: 200
+
+  - name: "tabpfn"
+    type: tabpfn
+    params:
+      n_estimators: 8
+
+  - name: "hybrid_with_tabpfn"
+    type: stacking
+    base_models: ["lightgbm", "xgboost", "tabpfn"]
+    meta_learner: logistic_regression
+
+calibration:
+  methods: [temperature, platt, isotonic]
+
+evaluation:
+  walk_forward:
+    train_seasons: 1
+    test_seasons: 1

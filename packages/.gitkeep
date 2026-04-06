@@ -1,0 +1,7 @@
+# Placeholder — packages/ zostanie wypełniony w Phase 1 (Code Cleanup).
+#
+# Docelowa zawartość:
+#   - ml-in-sports/  — core Python package (migracja z c:/Users/Estera/Mateusz/ml_in_sports/)
+#   - shared-types/  — Pydantic → OpenAPI → TypeScript types
+#   - ui/            — shared React components (design system, P6+)
+#   - config/        — shared configs (tsconfig, ruff, mypy, tailwind)

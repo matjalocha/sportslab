@@ -1,0 +1,47 @@
+# CODEOWNERS — automatyczny routing PR reviews wg katalogu.
+#
+# Źródło:    ideas/phase_0_foundations/repo_strategy.md (sekcja CODEOWNERS)
+# Placeholder owners: role z ideas/team.md (@lead @drmat @mleng @dataeng @swe @designer).
+# Podmień na realne GitHub usernames po P0.10 (umowy z zespołem).
+#
+# Precedencja: ostatni pasujący wzorzec wygrywa.
+
+# Globalny fallback
+*                                       @lead
+
+# Planning & meta
+/ideas/                                 @lead
+/docs/                                  @lead
+/.github/                               @swe @lead
+/CODEOWNERS                             @lead
+
+# Monorepo infra (root)
+/pyproject.toml                         @swe @mleng
+/pnpm-workspace.yaml                    @swe
+/Makefile                               @swe
+/justfile                               @swe
+
+# Core Python package (= obecny ml_in_sports, migracja w P1)
+/packages/ml-in-sports/src/features/    @mleng @drmat
+/packages/ml-in-sports/src/models/      @mleng @drmat
+/packages/ml-in-sports/src/processing/  @dataeng
+/packages/ml-in-sports/src/sports/      @mleng @drmat
+/packages/ml-in-sports/src/db/          @dataeng
+/packages/ml-in-sports/src/cli/         @dataeng @swe
+
+# Shared packages
+/packages/shared-types/                 @swe @mleng
+/packages/ui/                           @designer @swe
+/packages/config/                       @swe
+
+# Apps
+/apps/api/                              @swe
+/apps/web/                              @swe @designer
+/apps/scheduler/                        @dataeng @swe
+/apps/landing/                          @designer @swe
+
+# Infrastructure
+/infra/                                 @swe @dataeng
+
+# Research (notebooks, eksperymenty)
+/research/                              @drmat @mleng
