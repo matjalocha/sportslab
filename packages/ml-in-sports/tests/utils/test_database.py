@@ -4,6 +4,7 @@ from pathlib import Path
 
 import pandas as pd
 import pytest
+from ml_in_sports.settings import get_settings
 from ml_in_sports.utils.database import FootballDatabase
 
 
@@ -141,3 +142,83 @@ class TestScrapeLog:
         db.log_scrape("understat", "ENG-Premier League", "2324", 0, "failed")
         db.log_scrape("understat", "ENG-Premier League", "2324", 380, "success")
         assert db.is_scraped("understat", "ENG-Premier League", "2324")
+
+
+class _FakePostgresCursor:
+    """Minimal psycopg-like cursor for database backend tests."""
+
+    def __init__(self) -> None:
+        self.executed: list[tuple[str, tuple[object, ...]]] = []
+
+    def execute(self, sql: str, params: tuple[object, ...] = ()) -> None:
+        """Record executed SQL."""
+        self.executed.append((sql, params))
+
+    def executemany(self, sql: str, rows: list[list[object]]) -> None:
+        """Record batch SQL."""
+        self.executed.append((sql, tuple(rows[0]) if rows else ()))
+
+    def fetchone(self) -> tuple[str] | None:
+        """Return no rows by default."""
+        return None
+
+
+class _FakePostgresConnection:
+    """Minimal psycopg-like connection for database backend tests."""
+
+    def __init__(self) -> None:
+        self.cursor_obj = _FakePostgresCursor()
+        self.commits = 0
+        self.closed = False
+
+    def cursor(self) -> _FakePostgresCursor:
+        """Return a reusable cursor."""
+        return self.cursor_obj
+
+    def commit(self) -> None:
+        """Record commit calls."""
+        self.commits += 1
+
+    def close(self) -> None:
+        """Record close calls."""
+        self.closed = True
+
+
+class _FakePsycopg2:
+    """Minimal psycopg2 module replacement."""
+
+    def __init__(self, connection: _FakePostgresConnection) -> None:
+        self.connection = connection
+
+    def connect(self, database_url: str) -> _FakePostgresConnection:
+        """Return the fake connection."""
+        assert database_url == "postgresql://user:pass@localhost:5432/db"
+        return self.connection
+
+
+def test_postgres_path_uses_mock_connection(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Postgres mode should initialize through psycopg2 without a real server."""
+    fake_connection = _FakePostgresConnection()
+    fake_psycopg2 = _FakePsycopg2(fake_connection)
+    monkeypatch.setenv(
+        "ML_IN_SPORTS_DATABASE_URL",
+        "postgresql://user:pass@localhost:5432/db",
+    )
+    get_settings.cache_clear()
+    monkeypatch.setattr(
+        "ml_in_sports.utils.database.import_module",
+        lambda name: fake_psycopg2 if name == "psycopg2" else None,
+    )
+
+    database = FootballDatabase()
+    database.log_scrape("understat", "ENG-Premier League", "2324", 1, "success")
+
+    assert fake_connection.commits > 0
+    assert fake_connection.cursor_obj.executed
+    assert "%s" in fake_connection.cursor_obj.executed[0][0]
+    database.close()
+    assert fake_connection.closed
+    monkeypatch.delenv("ML_IN_SPORTS_DATABASE_URL", raising=False)
+    get_settings.cache_clear()

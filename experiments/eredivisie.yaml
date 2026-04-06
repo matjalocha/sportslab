@@ -1,0 +1,37 @@
+name: "NED-Eredivisie Backtest"
+description: "Walk-forward backtest for Eredivisie using basic football-data features."
+
+data:
+  leagues: ["NED-Eredivisie"]
+  seasons: ["2223", "2324", "2425"]
+  markets: ["1x2"]
+
+models:
+  - name: LightGBM
+    type: lightgbm
+    params:
+      n_estimators: 200
+      learning_rate: 0.05
+  - name: XGBoost
+    type: xgboost
+    params:
+      n_estimators: 200
+
+calibration:
+  methods: [temperature, platt, isotonic]
+  selection: walk_forward
+
+kelly:
+  fraction: 0.25
+  max_exposure_per_match: 0.03
+  max_exposure_per_round: 0.15
+  shrinkage: true
+
+evaluation:
+  walk_forward:
+    train_seasons: 2
+    test_seasons: 1
+  metrics: [log_loss, ece, brier_score, clv_mean, roi, sharpe]
+
+report:
+  format: [html, terminal]

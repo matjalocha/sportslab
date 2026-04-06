@@ -1,0 +1,56 @@
+name: "All 14 Leagues Backtest"
+description: "Walk-forward backtest across all 14 supported leagues (football-data.co.uk format main)."
+
+data:
+  leagues:
+    # Top-5 (Tier 1 — full xG + stats)
+    - "ENG-Premier League"
+    - "ESP-La Liga"
+    - "GER-Bundesliga"
+    - "ITA-Serie A"
+    - "FRA-Ligue 1"
+    # Tier 2 — basic stats + odds
+    - "ENG-Championship"
+    - "NED-Eredivisie"
+    - "GER-Bundesliga 2"
+    - "ITA-Serie B"
+    - "POR-Primeira Liga"
+    - "BEL-Jupiler Pro League"
+    - "TUR-Süper Lig"
+    - "GRE-Super League"
+    - "SCO-Premiership"
+    # Tier 2 — second divisions
+    # - "ESP-Segunda"      # uncomment when data ingested
+    # - "FRA-Ligue 2"      # uncomment when data ingested
+  seasons: ["2223", "2324", "2425"]
+  markets: ["1x2"]
+
+models:
+  - name: LightGBM
+    type: lightgbm
+    params:
+      n_estimators: 200
+      learning_rate: 0.05
+  - name: XGBoost
+    type: xgboost
+    params:
+      n_estimators: 200
+
+calibration:
+  methods: [temperature, platt, isotonic]
+  selection: walk_forward
+
+kelly:
+  fraction: 0.25
+  max_exposure_per_match: 0.03
+  max_exposure_per_round: 0.15
+  shrinkage: true
+
+evaluation:
+  walk_forward:
+    train_seasons: 2
+    test_seasons: 1
+  metrics: [log_loss, ece, brier_score, clv_mean, roi, sharpe, max_drawdown]
+
+report:
+  format: [html, terminal]

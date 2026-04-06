@@ -1,0 +1,11 @@
+# Morning pipeline (06:00 UTC)
+0 6 * * * cd /app && python infra/daily_pipeline.py morning >> /var/log/sportslab/morning.log 2>&1
+
+# Evening results (00:30 UTC+1 = 23:30 UTC)
+30 23 * * * cd /app && python infra/daily_pipeline.py evening >> /var/log/sportslab/evening.log 2>&1
+
+# Weekly report (Sunday 23:59 UTC)
+59 23 * * 0 cd /app && uv run sl weekly run >> /var/log/sportslab/weekly.log 2>&1
+
+# Backup (02:00 UTC)
+0 2 * * * /app/infra/backup.sh >> /var/log/sportslab/backup.log 2>&1

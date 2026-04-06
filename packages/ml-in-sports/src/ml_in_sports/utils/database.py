@@ -6,7 +6,9 @@ Uses UPSERT (INSERT OR REPLACE) to handle re-runs gracefully.
 
 import sqlite3
 from datetime import UTC, datetime
+from importlib import import_module
 from pathlib import Path
+from typing import Any
 
 import pandas as pd
 import structlog
@@ -429,11 +431,18 @@ class FootballDatabase:
     """
 
     def __init__(self, db_path: Path | str | None = None) -> None:
-        if db_path is None:
-            db_path = _default_db_path()
-        self._db_path = Path(db_path)
-        self._db_path.parent.mkdir(parents=True, exist_ok=True)
-        self._connection: sqlite3.Connection | None = None
+        settings = get_settings()
+        self._database_url = settings.database_url
+        self._is_postgres = bool(self._database_url)
+        self._connection: Any | None = None
+
+        if self._is_postgres:
+            self._db_path: Path | None = None
+        else:
+            if db_path is None:
+                db_path = _default_db_path()
+            self._db_path = Path(db_path)
+            self._db_path.parent.mkdir(parents=True, exist_ok=True)
 
     def __enter__(self) -> "FootballDatabase":
         """Enter context manager."""
@@ -444,19 +453,25 @@ class FootballDatabase:
         self.close()
 
     @property
-    def connection(self) -> sqlite3.Connection:
-        """Lazy connection to the database."""
+    def connection(self) -> Any:
+        """Lazy connection to the configured database."""
         if self._connection is None:
-            self._connection = sqlite3.connect(str(self._db_path))
-            self._connection.row_factory = sqlite3.Row
+            if self._is_postgres:
+                psycopg2 = import_module("psycopg2")
+                self._connection = psycopg2.connect(self._database_url)
+            else:
+                if self._db_path is None:
+                    raise RuntimeError("SQLite db_path is not configured")
+                self._connection = sqlite3.connect(str(self._db_path))
+                self._connection.row_factory = sqlite3.Row
         return self._connection
 
     def create_tables(self) -> None:
         """Create all tables if they don't exist."""
         for table_name, sql in _TABLES_SQL.items():
-            self.connection.execute(sql)
+            self._execute(sql)
             logger.info(f"Ensured table exists: {table_name}")
-        self.connection.commit()
+        self._commit()
 
     def upsert_dataframe(
         self, table: str, df: pd.DataFrame,
@@ -483,14 +498,17 @@ class FootballDatabase:
         columns = prepared.columns.tolist()
         placeholders = ", ".join(["?"] * len(columns))
         col_names = ", ".join(columns)
-        sql = f"INSERT OR REPLACE INTO {table} ({col_names}) VALUES ({placeholders})"
+        if self._is_postgres:
+            sql = _postgres_upsert_sql(table, columns, placeholders)
+        else:
+            sql = f"INSERT OR REPLACE INTO {table} ({col_names}) VALUES ({placeholders})"
 
         for col in prepared.columns:
             if pd.api.types.is_extension_array_dtype(prepared[col]):
                 prepared[col] = prepared[col].astype(object)
         rows = prepared.where(prepared.notna(), None).values.tolist()  # type: ignore[call-overload]  # pandas-stubs: None is valid at runtime
-        self.connection.executemany(sql, rows)
-        self.connection.commit()
+        self._executemany(sql, rows)
+        self._commit()
 
         logger.info(f"Upserted {len(rows)} rows into {table}")
         return len(rows)
@@ -525,6 +543,7 @@ class FootballDatabase:
         if conditions:
             query += " WHERE " + " AND ".join(conditions)
 
+        query = self._adapt_sql(query)
         return pd.read_sql_query(query, self.connection, params=params)  # type: ignore[arg-type]  # pandas-stubs: list[str] is invariant but safe here
 
     def is_scraped(self, source: str, league: str, season: str) -> bool:
@@ -538,13 +557,16 @@ class FootballDatabase:
         Returns:
             True if already scraped with status 'success'.
         """
-        cursor = self.connection.execute(
+        cursor = self._execute(
             "SELECT status FROM scrape_log "
             "WHERE source = ? AND league = ? AND season = ?",
             (source, league, season),
         )
         row = cursor.fetchone()
-        return row is not None and row["status"] == "success"
+        if row is None:
+            return False
+        status = row["status"] if isinstance(row, sqlite3.Row) else row[0]
+        return str(status) == "success"
 
     def log_scrape(
         self, source: str, league: str, season: str,
@@ -560,12 +582,42 @@ class FootballDatabase:
             status: Result status ('success', 'failed', 'partial').
         """
         now = datetime.now(UTC).isoformat()
-        self.connection.execute(
+        self._execute(
             "INSERT OR REPLACE INTO scrape_log "
             "(source, league, season, scraped_at, row_count, status) "
             "VALUES (?, ?, ?, ?, ?, ?)",
             (source, league, season, now, row_count, status),
         )
+        self._commit()
+
+    def _execute(self, sql: str, params: tuple[Any, ...] = ()) -> Any:
+        """Execute SQL on either SQLite or Postgres."""
+        if self._is_postgres:
+            cursor = self.connection.cursor()
+            cursor.execute(self._adapt_sql(sql), params)
+            self._commit()
+            return cursor
+        return self.connection.execute(sql, params)
+
+    def _executemany(self, sql: str, rows: list[list[Any]]) -> Any:
+        """Execute a batch insert/update on either SQLite or Postgres."""
+        if self._is_postgres:
+            cursor = self.connection.cursor()
+            cursor.executemany(self._adapt_sql(sql), rows)
+            self._commit()
+            return cursor
+        return self.connection.executemany(sql, rows)
+
+    def _adapt_sql(self, sql: str) -> str:
+        """Adapt SQLite-style SQL to the active backend."""
+        if not self._is_postgres:
+            return sql
+        adapted = sql.replace("?", "%s")
+        adapted = adapted.replace("INTEGER PRIMARY KEY AUTOINCREMENT", "SERIAL PRIMARY KEY")
+        return adapted
+
+    def _commit(self) -> None:
+        """Commit the active connection."""
         self.connection.commit()
 
     def close(self) -> None:
@@ -573,3 +625,38 @@ class FootballDatabase:
         if self._connection is not None:
             self._connection.close()
             self._connection = None
+
+
+def _postgres_upsert_sql(table: str, columns: list[str], placeholders: str) -> str:
+    """Build a simple Postgres upsert statement for a known table."""
+    col_names = ", ".join(columns)
+    conflict_cols = _unique_columns(table)
+    if not conflict_cols:
+        return f"INSERT INTO {table} ({col_names}) VALUES ({placeholders}) ON CONFLICT DO NOTHING"
+
+    conflict_target = ", ".join(conflict_cols)
+    update_cols = [col for col in columns if col not in conflict_cols and col != "id"]
+    if not update_cols:
+        return (
+            f"INSERT INTO {table} ({col_names}) VALUES ({placeholders}) "
+            f"ON CONFLICT ({conflict_target}) DO NOTHING"
+        )
+    updates = ", ".join(f"{col} = EXCLUDED.{col}" for col in update_cols)
+    return (
+        f"INSERT INTO {table} ({col_names}) VALUES ({placeholders}) "
+        f"ON CONFLICT ({conflict_target}) DO UPDATE SET {updates}"
+    )
+
+
+def _unique_columns(table: str) -> list[str]:
+    """Return the first UNIQUE column group from a table DDL statement."""
+    sql = _TABLES_SQL.get(table, "")
+    marker = "UNIQUE("
+    start = sql.find(marker)
+    if start == -1:
+        return []
+    start += len(marker)
+    end = sql.find(")", start)
+    if end == -1:
+        return []
+    return [col.strip() for col in sql[start:end].split(",")]

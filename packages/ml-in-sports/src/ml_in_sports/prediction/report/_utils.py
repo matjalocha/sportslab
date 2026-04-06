@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import datetime as dt
+from collections.abc import Sequence
 from typing import Protocol, runtime_checkable
 
 MAX_TELEGRAM_CHARS = 4096
@@ -25,7 +26,7 @@ class _HasRecommendation(Protocol):
 
 
 def infer_report_date_from_recommendations(
-    items: list[_HasKickoffDt],
+    items: Sequence[_HasKickoffDt],
 ) -> dt.date:
     """Infer report date from the first item's kickoff_dt.
 
@@ -42,7 +43,7 @@ def infer_report_date_from_recommendations(
 
 
 def infer_report_date_from_results(
-    items: list[_HasRecommendation],
+    items: Sequence[_HasRecommendation],
 ) -> dt.date:
     """Infer report date from the first result's recommendation kickoff_dt.
 

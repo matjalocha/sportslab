@@ -1,0 +1,27 @@
+services:
+  pipeline:
+    build:
+      context: .
+      dockerfile: infra/Dockerfile
+    env_file:
+      - infra/.env
+    volumes:
+      - ./data:/app/data
+      - ./reports:/app/reports
+      - ./predictions:/app/predictions
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: sportslab
+      POSTGRES_USER: sportslab
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+  pgdata:

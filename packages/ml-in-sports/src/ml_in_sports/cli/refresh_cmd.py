@@ -63,7 +63,7 @@ def _clear_scrape_log(
 
     conn.commit()
     logger.info("scrape_log_cleared", deleted_count=total)
-    return total
+    return int(total)
 
 
 def _run_refresh(

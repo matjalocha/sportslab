@@ -31,6 +31,12 @@ FOOTBALL_DATA_LEAGUE_MAP: dict[str, str] = {
     "I2": "ITA-Serie B",
     "N1": "NED-Eredivisie",
     "P1": "POR-Primeira Liga",
+    "B1": "BEL-Jupiler Pro League",
+    "T1": "TUR-Süper Lig",
+    "G1": "GRE-Super League",
+    "SC0": "SCO-Premiership",
+    "SP2": "ESP-Segunda",
+    "F2": "FRA-Ligue 2",
 }
 
 # Reverse map: SportsLab name -> football-data code.
@@ -93,6 +99,18 @@ _META_COLS: dict[str, str] = {
     "AwayTeam": "away_team",
     "FTHG": "home_goals",
     "FTAG": "away_goals",
+    "HS": "home_shots",
+    "AS": "away_shots",
+    "HST": "home_shots_on_target",
+    "AST": "away_shots_on_target",
+    "HC": "home_corners",
+    "AC": "away_corners",
+    "HF": "home_fouls",
+    "AF": "away_fouls",
+    "HY": "home_yellow_cards",
+    "AY": "away_yellow_cards",
+    "HR": "home_red_cards",
+    "AR": "away_red_cards",
 }
 
 _FOOTBALL_DATA_BASE_URL = "https://www.football-data.co.uk/mmz4281/{season}/{code}.csv"
@@ -139,6 +157,7 @@ def load_football_data_csv(csv_path: Path) -> pd.DataFrame:
         result["date"] = pd.to_datetime(
             raw["Date"],
             dayfirst=True,
+            format="mixed",
         ).dt.strftime("%Y-%m-%d")
     else:
         result["date"] = pd.NaT

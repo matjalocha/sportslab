@@ -22,7 +22,7 @@
     "Wolverhampton Wanderers": ["Wolverhampton", "Wolves"],
     "Norwich City": ["Norwich"],
     "Huddersfield Town": ["Huddersfield"],
-    "Middlesbrough": ["Middlesbrough FC"],
+    "Middlesbrough": ["Middlesbrough FC", "Middlesboro"],
 
     "Atletico Madrid": ["Ath Madrid", "Atlético Madrid", "Atlético de Madrid", "Atletico"],
     "Alaves": ["Alavés", "Deportivo Alavés"],
@@ -151,5 +151,51 @@
     "Bastia": ["SC Bastia"],
     "Evian Thonon Gaillard": ["Evian TG"],
     "Nancy": ["AS Nancy", "AS Nancy Lorraine"],
-    "Paris FC": ["Paris FC"]
+    "Paris FC": ["Paris FC"],
+
+    "Ajax Amsterdam": ["Ajax", "AFC Ajax"],
+    "PSV Eindhoven": ["PSV"],
+    "AZ Alkmaar": ["AZ"],
+    "ADO Den Haag": ["Den Haag"],
+    "Feyenoord": ["Feyenoord Rotterdam"],
+    "Twente": ["FC Twente"],
+    "Utrecht": ["FC Utrecht"],
+    "Vitesse": ["Vitesse Arnhem"],
+    "Heerenveen": ["SC Heerenveen"],
+
+    "Legia Warszawa": ["Legia"],
+    "Lech Poznan": ["Lech", "Lech Poznań"],
+    "MKS Cracovia": ["Cracovia"],
+    "Piast Gliwice": ["Piast"],
+    "Wisla Krakow": ["Wisla", "Wisła Kraków"],
+    "Gornik Zabrze": ["Gornik", "Górnik Zabrze"],
+    "Jagiellonia Bialystok": ["Jagiellonia", "Jagiellonia Białystok"],
+    "Rakow Czestochowa": ["Rakow", "Raków Częstochowa"],
+    "Pogon Szczecin": ["Pogon", "Pogoń Szczecin"],
+    "Slask Wroclaw": ["Slask", "Śląsk Wrocław"],
+
+    "Benfica": ["SL Benfica"],
+    "Porto": ["FC Porto"],
+    "Sporting CP": ["Sporting", "Sporting Lisbon"],
+    "Braga": ["Sporting Braga", "SC Braga"],
+    "Vitoria Guimaraes": ["Guimaraes", "Vitoria Guimarães"],
+
+    "Club Brugge": ["Club Brugge KV", "Brugge"],
+    "Anderlecht": ["RSC Anderlecht"],
+    "Genk": ["KRC Genk"],
+    "Gent": ["KAA Gent"],
+    "Standard Liege": ["Standard", "Standard Liège"],
+    "Antwerp": ["Royal Antwerp"],
+
+    "Galatasaray": ["Galatasaray SK"],
+    "Fenerbahce": ["Fenerbahçe", "Fenerbahce SK"],
+    "Besiktas": ["Beşiktaş", "Besiktas JK"],
+    "Trabzonspor": ["Trabzon"],
+    "Istanbul Basaksehir": ["Basaksehir", "Başakşehir"],
+
+    "Sparta Prague": ["Sparta Praha"],
+    "Slavia Prague": ["Slavia Praha"],
+    "Viktoria Plzen": ["Viktoria Plzeň", "Plzen"],
+    "Banik Ostrava": ["Baník Ostrava"],
+    "Slovan Liberec": ["Liberec"]
 }

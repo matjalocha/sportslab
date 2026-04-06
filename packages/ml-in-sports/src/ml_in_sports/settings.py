@@ -31,12 +31,14 @@ class Settings(BaseSettings):
     model_config = {"env_prefix": "ML_IN_SPORTS_"}
 
     db_path: Path = Path("data/football.db")
+    database_url: str = ""
     fifa_data_dir: Path = Path("data/fifa")
     pinnacle_odds_dir: Path = Path("data/odds")
     log_level: str = "INFO"
     log_json: bool = False
     telegram_bot_token: str = ""
     telegram_chat_id: str = ""
+    healthcheck_id: str = ""
 
 
 @lru_cache(maxsize=1)

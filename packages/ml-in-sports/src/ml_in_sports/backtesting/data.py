@@ -93,6 +93,8 @@ _RAW_MATCH_STATS: frozenset[str] = frozenset({
     "away_possession",
     "home_total_shots",
     "away_total_shots",
+    "home_shots",
+    "away_shots",
     "home_shots_on_target",
     "away_shots_on_target",
     "home_effective_tackles",
@@ -140,6 +142,8 @@ _RAW_MATCH_STATS: frozenset[str] = frozenset({
     # that were missing from the original exclusion list.
     "home_total_long_balls",
     "away_total_long_balls",
+    "home_corners",
+    "away_corners",
     "home_won_corners",
     "away_won_corners",
 })

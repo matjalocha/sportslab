@@ -105,6 +105,7 @@ node_modules/
 
 # Env files
 .env
+/infra/.env
 .env.local
 .env.*.local
 .env.production

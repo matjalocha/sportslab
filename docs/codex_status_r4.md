@@ -1,0 +1,7 @@
+TASK-R4-01: DONE | pliki: [infra/Dockerfile, infra/docker-compose.yml, infra/.env.example, .gitignore] | uwagi: prosty setup Docker + Postgres compose; infra/.env jawnie ignorowany
+TASK-R4-02: DONE | pliki: [packages/ml-in-sports/src/ml_in_sports/settings.py, packages/ml-in-sports/src/ml_in_sports/utils/database.py, packages/ml-in-sports/pyproject.toml, packages/ml-in-sports/tests/utils/test_database.py] | uwagi: Postgres przez ML_IN_SPORTS_DATABASE_URL; SQLite pozostaje domyślny; psycopg2 w optional extra postgres
+TASK-R4-03: DONE | pliki: [packages/ml-in-sports/src/ml_in_sports/cli/migrate_cmd.py, packages/ml-in-sports/src/ml_in_sports/cli/main.py, packages/ml-in-sports/tests/cli/test_migrate_cmd.py] | uwagi: CLI sl migrate sqlite-to-postgres; helper testowany SQLite in-memory -> SQLite in-memory
+TASK-R4-04: DONE | pliki: [infra/daily_pipeline.py, infra/crontab.example] | uwagi: cron wrapper morning/evening + healthcheck ping przez HEALTHCHECK_ID
+TASK-R4-05: DONE | pliki: [infra/backup.sh, infra/restore.sh] | uwagi: pg_dump gzip do B2 oraz restore z B2 backupu
+TASK-R4-06: DONE | pliki: [packages/ml-in-sports/src/ml_in_sports/settings.py, packages/ml-in-sports/src/ml_in_sports/notification/healthcheck.py, packages/ml-in-sports/tests/notification/test_healthcheck.py, infra/.env.example] | uwagi: healthchecks.io success/failure pingi z mockowanymi testami; httpx już w deps
+R4-VERIFY: DONE | pliki: [n/a] | uwagi: ruff OK; pytest packages/ml-in-sports -q = 1195 passed; mypy packages nadal ma 24 istniejące błędy w testach backtesting/ensemble poza R4

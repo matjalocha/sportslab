@@ -3,10 +3,13 @@
 import typer
 
 from ml_in_sports.cli.backtest_cmd import backtest_app
+from ml_in_sports.cli.download_leagues_cmd import download_leagues_app
 from ml_in_sports.cli.download_odds_cmd import download_odds_app
 from ml_in_sports.cli.features_cmd import features_app
+from ml_in_sports.cli.ingest_cmd import ingest_app
 from ml_in_sports.cli.kelly_cmd import kelly_app
 from ml_in_sports.cli.leakage_cmd import leakage_app
+from ml_in_sports.cli.migrate_cmd import migrate_app
 from ml_in_sports.cli.notify_cmd import notify_app
 from ml_in_sports.cli.pipeline_cmd import pipeline_app
 from ml_in_sports.cli.predict_cmd import predict_app
@@ -40,11 +43,18 @@ def main(
 
 
 app.add_typer(backtest_app, name="backtest", help="Run walk-forward backtest.")
+app.add_typer(
+    download_leagues_app,
+    name="download-leagues",
+    help="Download football-data CSVs for registered leagues.",
+)
 app.add_typer(download_odds_app, name="download-odds", help="Download Pinnacle odds CSVs.")
 app.add_typer(pipeline_app, name="pipeline", help="Run data pipeline.")
 app.add_typer(features_app, name="features", help="Materialize features to Parquet.")
+app.add_typer(ingest_app, name="ingest", help="Ingest new league football-data CSVs.")
 app.add_typer(kelly_app, name="kelly", help="Compute Kelly stakes.")
 app.add_typer(leakage_app, name="leakage-check", help="Run automated leakage detection.")
+app.add_typer(migrate_app, name="migrate", help="Database migration tools.")
 app.add_typer(notify_app, name="notify", help="Send Telegram notifications.")
 app.add_typer(predict_app, name="predict", help="Generate daily bet recommendations.")
 app.add_typer(refresh_app, name="refresh", help="Refresh current season data.")

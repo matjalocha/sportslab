@@ -188,3 +188,49 @@ class TestMultiLeagueTeamNames:
         ]
         for team in ligue_1_teams:
             assert team in ALL_KNOWN_TEAMS, f"{team} not in ALL_KNOWN_TEAMS"
+
+
+class TestExtendedLeagueTeamNames:
+    """Tests for R5a league aliases."""
+
+    def test_championship_aliases(self) -> None:
+        """Championship football-data.co.uk aliases map correctly."""
+        assert normalize_team_name("Leeds") == "Leeds United"
+        assert normalize_team_name("Nott'm Forest") == "Nottingham Forest"
+        assert normalize_team_name("Sheffield Utd") == "Sheffield United"
+        assert normalize_team_name("West Brom") == "West Bromwich Albion"
+        assert normalize_team_name("Middlesboro") == "Middlesbrough"
+        assert normalize_team_name("QPR") == "Queens Park Rangers"
+
+    def test_eredivisie_aliases(self) -> None:
+        """Eredivisie aliases map correctly."""
+        assert normalize_team_name("Ajax") == "Ajax Amsterdam"
+        assert normalize_team_name("PSV") == "PSV Eindhoven"
+        assert normalize_team_name("AZ") == "AZ Alkmaar"
+        assert normalize_team_name("Den Haag") == "ADO Den Haag"
+
+    def test_ekstraklasa_aliases(self) -> None:
+        """Ekstraklasa aliases map correctly."""
+        assert normalize_team_name("Legia") == "Legia Warszawa"
+        assert normalize_team_name("Lech") == "Lech Poznan"
+        assert normalize_team_name("Cracovia") == "MKS Cracovia"
+        assert normalize_team_name("Piast") == "Piast Gliwice"
+        assert normalize_team_name("Wisla") == "Wisla Krakow"
+        assert normalize_team_name("Gornik") == "Gornik Zabrze"
+
+    def test_other_r5a_aliases(self) -> None:
+        """Popular aliases from other R5a leagues map correctly."""
+        assert normalize_team_name("Sporting Lisbon") == "Sporting CP"
+        assert normalize_team_name("Brugge") == "Club Brugge"
+        assert normalize_team_name("Fenerbahçe") == "Fenerbahce"
+        assert normalize_team_name("Sparta Praha") == "Sparta Prague"
+
+    def test_extended_teams_in_known_set(self) -> None:
+        """Major extended-league teams are in ALL_KNOWN_TEAMS."""
+        teams = [
+            "Ajax Amsterdam", "PSV Eindhoven", "Legia Warszawa",
+            "Lech Poznan", "Sporting CP", "Club Brugge",
+            "Galatasaray", "Sparta Prague",
+        ]
+        for team in teams:
+            assert team in ALL_KNOWN_TEAMS, f"{team} not in ALL_KNOWN_TEAMS"
