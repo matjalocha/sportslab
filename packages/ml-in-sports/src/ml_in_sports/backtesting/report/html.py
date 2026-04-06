@@ -12,42 +12,24 @@ from pathlib import Path
 import plotly.graph_objects as go
 import structlog
 from jinja2 import BaseLoader, Environment
+from markupsafe import Markup
 
 from ml_in_sports.backtesting.report.generator import ReportData
+from ml_in_sports.report_theme import (
+    BRAND_ACCENT,
+    BRAND_BORDER,
+    BRAND_CARD,
+    BRAND_PRIMARY,
+    BRAND_SURFACE,
+    COLOR_MUTED,
+    COLOR_NEGATIVE,
+    COLOR_NEUTRAL,
+    COLOR_POSITIVE,
+    FALLBACK_COLORS,
+    MODEL_COLORS,
+)
 
 logger = structlog.get_logger(__name__)
-
-
-# ---------------------------------------------------------------------------
-# Color tokens (from design spec)
-# ---------------------------------------------------------------------------
-
-_BRAND_PRIMARY = "#1B2A4A"
-_BRAND_ACCENT = "#2D7DD2"
-_BRAND_SURFACE = "#F7F8FA"
-_BRAND_CARD = "#FFFFFF"
-_BRAND_BORDER = "#E2E5EA"
-
-_COLOR_POSITIVE = "#1A7F37"
-_COLOR_NEGATIVE = "#CF222E"
-_COLOR_NEUTRAL = "#9A6700"
-_COLOR_MUTED = "#656D76"
-
-_MODEL_COLORS: dict[str, str] = {
-    "LightGBM": "#2D7DD2",
-    "XGBoost": "#E36209",
-    "TabPFN": "#8250DF",
-    "Hybrid ENS": _BRAND_PRIMARY,
-    "Baseline": "#AFB8C1",
-}
-
-_FALLBACK_COLORS = ["#2D7DD2", "#E36209", "#8250DF", _BRAND_PRIMARY, "#AFB8C1"]
-
-_SEMAPHORE_MAP = {
-    "green": _COLOR_POSITIVE,
-    "yellow": _COLOR_NEUTRAL,
-    "red": _COLOR_NEGATIVE,
-}
 
 
 # ---------------------------------------------------------------------------
@@ -57,7 +39,7 @@ _SEMAPHORE_MAP = {
 
 def _model_color(model_name: str, idx: int = 0) -> str:
     """Return the brand color for a model, with fallback rotation."""
-    return _MODEL_COLORS.get(model_name, _FALLBACK_COLORS[idx % len(_FALLBACK_COLORS)])
+    return MODEL_COLORS.get(model_name, FALLBACK_COLORS[idx % len(FALLBACK_COLORS)])
 
 
 def _hex_to_rgba(hex_color: str, alpha: float = 0.1) -> str:
@@ -97,8 +79,8 @@ def _build_cumulative_clv_chart(data: ReportData) -> str:
         legend={"orientation": "h", "yanchor": "bottom", "y": 1.02, "x": 0.5, "xanchor": "center"},
         height=400,
         margin={"t": 60, "r": 30, "b": 50, "l": 60},
-        xaxis={"gridcolor": _BRAND_BORDER, "gridwidth": 0.5},
-        yaxis={"gridcolor": _BRAND_BORDER, "gridwidth": 0.5},
+        xaxis={"gridcolor": BRAND_BORDER, "gridwidth": 0.5},
+        yaxis={"gridcolor": BRAND_BORDER, "gridwidth": 0.5},
     )
 
     return str(fig.to_html(full_html=False, include_plotlyjs=False))
@@ -130,8 +112,8 @@ def _build_equity_curve_chart(data: ReportData) -> str:
         legend={"orientation": "h", "yanchor": "bottom", "y": 1.02, "x": 0.5, "xanchor": "center"},
         height=400,
         margin={"t": 60, "r": 30, "b": 50, "l": 60},
-        xaxis={"gridcolor": _BRAND_BORDER, "gridwidth": 0.5},
-        yaxis={"gridcolor": _BRAND_BORDER, "gridwidth": 0.5},
+        xaxis={"gridcolor": BRAND_BORDER, "gridwidth": 0.5},
+        yaxis={"gridcolor": BRAND_BORDER, "gridwidth": 0.5},
     )
 
     return str(fig.to_html(full_html=False, include_plotlyjs=False))
@@ -263,6 +245,14 @@ body {
   background: var(--brand-card); border: 1px solid var(--brand-border);
   border-radius: 8px; padding: 16px; margin-bottom: 24px;
 }
+.chart-grid-three {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+}
+@media (max-width: 900px) { .chart-grid-three { grid-template-columns: 1fr; } }
+.chart-grid-two {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+}
+@media (max-width: 900px) { .chart-grid-two { grid-template-columns: 1fr; } }
 
 /* Footer */
 .footer {
@@ -319,6 +309,17 @@ body {
     </div>
     {% endfor %}
   </div>
+</div>
+
+<!-- Section C: Calibration -->
+<div class="section">
+  <h2>Calibration &amp; Model Quality</h2>
+  <p style="font-size:13px; color:var(--color-muted); margin-bottom:16px;">
+    Reliability diagram shows predicted vs actual probabilities.
+    Diagonal = perfect calibration. ECE heatmap shows calibration quality per league x season.
+  </p>
+  <div class="chart-container">{{ reliability_chart }}</div>
+  <div class="chart-container">{{ ece_heatmap_chart }}</div>
 </div>
 
 <!-- Metric Glossary -->
@@ -435,6 +436,25 @@ body {
   {% endif %}
 </div>
 
+<!-- Section F: Stake Distribution & Betting Activity -->
+<div class="section">
+  <h2>Stake Distribution &amp; Betting Activity</h2>
+  <div class="chart-grid-three">
+    <div class="chart-container">{{ kelly_distribution_chart }}</div>
+    <div class="chart-container">{{ bets_heatmap_chart }}</div>
+    <div class="chart-container">{{ edge_per_market_chart }}</div>
+  </div>
+</div>
+
+<!-- Section H: Model Comparison Matrix -->
+<div class="section">
+  <h2>Model Comparison</h2>
+  <div class="chart-grid-two">
+    <div class="chart-container">{{ radar_chart }}</div>
+    <div class="chart-container">{{ pairwise_chart }}</div>
+  </div>
+</div>
+
 <div class="footer">
   SportsLab Backtest Report | Generated {{ data.generated_at.strftime('%Y-%m-%d %H:%M UTC') }}
   {% if data.git_hash %} | {{ data.git_hash }}{% endif %}
@@ -462,7 +482,14 @@ def render_html_report(data: ReportData, output_path: Path) -> Path:
         The output path (for chaining / logging).
     """
     clv_chart = _build_cumulative_clv_chart(data)
+    reliability_chart = data.reliability_chart
+    ece_heatmap_chart = data.ece_heatmap_chart
     equity_chart = _build_equity_curve_chart(data)
+    kelly_distribution_chart = data.kelly_distribution_chart
+    bets_heatmap_chart = data.bets_heatmap_chart
+    edge_per_market_chart = data.edge_per_market_chart
+    radar_chart = data.radar_chart
+    pairwise_chart = data.pairwise_chart
 
     hero_cards = _prepare_hero_cards(data)
     hero_borders = _prepare_hero_borders(data)
@@ -479,27 +506,34 @@ def render_html_report(data: ReportData, output_path: Path) -> Path:
         "max_drawdown": "Maximum Drawdown — worst peak-to-trough loss as % of bankroll. Lower = less risky.",
     }
 
-    env = Environment(loader=BaseLoader(), autoescape=False)
+    env = Environment(loader=BaseLoader(), autoescape=True)
     env.filters["commaformat"] = lambda v: f"{int(v):,}"
     template = env.from_string(_HTML_TEMPLATE)
 
     html = template.render(
         data=data,
-        clv_chart=clv_chart,
-        equity_chart=equity_chart,
+        clv_chart=Markup(clv_chart),
+        reliability_chart=Markup(reliability_chart),
+        ece_heatmap_chart=Markup(ece_heatmap_chart),
+        equity_chart=Markup(equity_chart),
+        kelly_distribution_chart=Markup(kelly_distribution_chart),
+        bets_heatmap_chart=Markup(bets_heatmap_chart),
+        edge_per_market_chart=Markup(edge_per_market_chart),
+        radar_chart=Markup(radar_chart),
+        pairwise_chart=Markup(pairwise_chart),
         hero_cards=hero_cards,
         hero_borders=hero_borders,
         overall_color=overall_color,
         metric_descriptions=metric_descriptions,
-        brand_primary=_BRAND_PRIMARY,
-        brand_accent=_BRAND_ACCENT,
-        brand_surface=_BRAND_SURFACE,
-        brand_card=_BRAND_CARD,
-        brand_border=_BRAND_BORDER,
-        color_positive=_COLOR_POSITIVE,
-        color_negative=_COLOR_NEGATIVE,
-        color_neutral=_COLOR_NEUTRAL,
-        color_muted=_COLOR_MUTED,
+        brand_primary=BRAND_PRIMARY,
+        brand_accent=BRAND_ACCENT,
+        brand_surface=BRAND_SURFACE,
+        brand_card=BRAND_CARD,
+        brand_border=BRAND_BORDER,
+        color_positive=COLOR_POSITIVE,
+        color_negative=COLOR_NEGATIVE,
+        color_neutral=COLOR_NEUTRAL,
+        color_muted=COLOR_MUTED,
     )
 
     output_path.parent.mkdir(parents=True, exist_ok=True)

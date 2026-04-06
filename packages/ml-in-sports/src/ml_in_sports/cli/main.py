@@ -7,8 +7,12 @@ from ml_in_sports.cli.download_odds_cmd import download_odds_app
 from ml_in_sports.cli.features_cmd import features_app
 from ml_in_sports.cli.kelly_cmd import kelly_app
 from ml_in_sports.cli.leakage_cmd import leakage_app
+from ml_in_sports.cli.notify_cmd import notify_app
 from ml_in_sports.cli.pipeline_cmd import pipeline_app
+from ml_in_sports.cli.predict_cmd import predict_app
 from ml_in_sports.cli.refresh_cmd import refresh_app
+from ml_in_sports.cli.results_cmd import results_app
+from ml_in_sports.cli.weekly_cmd import weekly_app
 from ml_in_sports.logging import configure_logging
 
 app = typer.Typer(
@@ -41,4 +45,8 @@ app.add_typer(pipeline_app, name="pipeline", help="Run data pipeline.")
 app.add_typer(features_app, name="features", help="Materialize features to Parquet.")
 app.add_typer(kelly_app, name="kelly", help="Compute Kelly stakes.")
 app.add_typer(leakage_app, name="leakage-check", help="Run automated leakage detection.")
+app.add_typer(notify_app, name="notify", help="Send Telegram notifications.")
+app.add_typer(predict_app, name="predict", help="Generate daily bet recommendations.")
 app.add_typer(refresh_app, name="refresh", help="Refresh current season data.")
+app.add_typer(results_app, name="results", help="Process daily bet results.")
+app.add_typer(weekly_app, name="weekly", help="Generate weekly performance report.")

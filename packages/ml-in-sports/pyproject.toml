@@ -30,6 +30,8 @@ dependencies = [
     "jinja2>=3.1,<4.0",            # R2: HTML report template
     "rich>=13.0,<15.0",            # R2: terminal report
     "pyarrow>=23.0.1",
+    "httpx>=0.27,<1.0",            # TASK-09: Telegram notifications
+    "beautifulsoup4>=4.12,<5.0",   # added in TASK-10 (STS odds scraper)
 ]
 
 [project.optional-dependencies]

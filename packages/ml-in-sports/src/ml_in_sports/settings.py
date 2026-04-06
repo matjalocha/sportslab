@@ -35,6 +35,8 @@ class Settings(BaseSettings):
     pinnacle_odds_dir: Path = Path("data/odds")
     log_level: str = "INFO"
     log_json: bool = False
+    telegram_bot_token: str = ""
+    telegram_chat_id: str = ""
 
 
 @lru_cache(maxsize=1)

@@ -55,6 +55,7 @@ class ModelComparisonRow:
     clv: float
     roi: float
     sharpe: float
+    hit_rate: float
     n_bets: int
 
 
@@ -91,9 +92,21 @@ class ReportData:
     cumulative_clv: dict[str, list[float]]
     clv_per_league: list[LeagueRow]
 
+    reliability_data: dict[str, list[tuple[float, float]]]
+    ece_heatmap: list[dict[str, object]]
+    reliability_chart: str
+    ece_heatmap_chart: str
+
     equity_curves: dict[str, list[float]]
     drawdown_series: dict[str, list[float]]
     monthly_returns: list[dict[str, object]]
+
+    kelly_distribution_chart: str
+    edge_per_market_chart: str
+    bets_heatmap_chart: str
+
+    radar_chart: str
+    pairwise_chart: str
 
     model_comparison: list[ModelComparisonRow]
     fold_details: list[FoldDetailRow]
@@ -118,17 +131,30 @@ def build_report_data(result: BacktestResult) -> ReportData:
     """
     # Deferred import to avoid circular dependency (charts imports generator types)
     from ml_in_sports.backtesting.report.charts import (
+        build_bets_heatmap,
         build_clv_per_league,
         build_cumulative_clv,
+        build_ece_heatmap_data,
+        build_ece_heatmap_from_data,
+        build_edge_per_market,
         build_equity_and_drawdown,
+        build_kelly_distribution,
         build_model_comparison,
+        build_pairwise_matrix,
+        build_radar_chart,
+        build_reliability_data,
+        build_reliability_diagram,
     )
 
     aggregate = result.aggregate_metrics
+    best_model = _pick_best_model(aggregate) if aggregate else None
     hero = _build_hero_metrics(aggregate, result.fold_results)
     semaphore = _build_semaphore(hero)
     verdict = _build_verdict_text(hero, semaphore)
     equity_curves, drawdown_series = build_equity_and_drawdown(result.fold_results)
+    reliability_data = build_reliability_data(result.fold_results)
+    ece_heatmap = build_ece_heatmap_data(result.fold_results, model_name=best_model)
+    model_comparison = build_model_comparison(aggregate, result.fold_results)
 
     return ReportData(
         experiment_name=result.config.name,
@@ -140,10 +166,21 @@ def build_report_data(result: BacktestResult) -> ReportData:
         semaphore=semaphore,
         cumulative_clv=build_cumulative_clv(result.fold_results),
         clv_per_league=build_clv_per_league(result.fold_results),
+        reliability_data=reliability_data,
+        ece_heatmap=ece_heatmap,
+        reliability_chart=build_reliability_diagram(result.fold_results),
+        ece_heatmap_chart=build_ece_heatmap_from_data(ece_heatmap),
         equity_curves=equity_curves,
         drawdown_series=drawdown_series,
         monthly_returns=[],
-        model_comparison=build_model_comparison(aggregate, result.fold_results),
+        kelly_distribution_chart=build_kelly_distribution(
+            result.fold_results, odds=None, model_name=best_model
+        ),
+        edge_per_market_chart=build_edge_per_market(result.fold_results, model_name=best_model),
+        bets_heatmap_chart=build_bets_heatmap(result.fold_results, model_name=best_model),
+        radar_chart=build_radar_chart(model_comparison),
+        pairwise_chart=build_pairwise_matrix(aggregate),
+        model_comparison=model_comparison,
         fold_details=_build_fold_details(result.fold_results),
         n_folds=len({fr.fold_idx for fr in result.fold_results}),
         seasons=result.config.data.seasons,
