@@ -4,6 +4,7 @@ Stores scraped data so it only needs to be fetched once.
 Uses UPSERT (INSERT OR REPLACE) to handle re-runs gracefully.
 """
 
+import re
 import sqlite3
 from datetime import UTC, datetime
 from importlib import import_module
@@ -609,11 +610,22 @@ class FootballDatabase:
         return self.connection.executemany(sql, rows)
 
     def _adapt_sql(self, sql: str) -> str:
-        """Adapt SQLite-style SQL to the active backend."""
+        """Adapt SQLite-style SQL to the active backend.
+
+        Handles three SQLite-specific constructs:
+        - ``?`` placeholders become ``%s`` (psycopg2 convention)
+        - ``INTEGER PRIMARY KEY AUTOINCREMENT`` becomes ``SERIAL PRIMARY KEY``
+        - ``INSERT OR REPLACE INTO`` becomes
+          ``INSERT INTO ... ON CONFLICT (...) DO UPDATE SET ...``
+        """
         if not self._is_postgres:
             return sql
         adapted = sql.replace("?", "%s")
-        adapted = adapted.replace("INTEGER PRIMARY KEY AUTOINCREMENT", "SERIAL PRIMARY KEY")
+        adapted = adapted.replace(
+            "INTEGER PRIMARY KEY AUTOINCREMENT", "SERIAL PRIMARY KEY",
+        )
+        if "INSERT OR REPLACE INTO" in adapted:
+            adapted = _convert_insert_or_replace(adapted)
         return adapted
 
     def _commit(self) -> None:
@@ -625,6 +637,44 @@ class FootballDatabase:
         if self._connection is not None:
             self._connection.close()
             self._connection = None
+
+
+def _convert_insert_or_replace(sql: str) -> str:
+    """Convert SQLite ``INSERT OR REPLACE INTO`` to Postgres ``ON CONFLICT``.
+
+    Extracts the table name from the statement, looks up the UNIQUE
+    constraint columns from ``_TABLES_SQL``, and appends
+    ``ON CONFLICT (...) DO UPDATE SET ...`` for all non-key columns.
+
+    If the table has no UNIQUE constraint the statement falls back to
+    a plain ``INSERT INTO`` (which may raise on duplicates — but that
+    is the correct behaviour when there is no conflict target).
+    """
+    match = re.search(r"INSERT OR REPLACE INTO (\w+)", sql)
+    if not match:
+        return sql.replace("INSERT OR REPLACE INTO", "INSERT INTO")
+
+    table = match.group(1)
+    unique_cols = _unique_columns(table)
+
+    sql = sql.replace("INSERT OR REPLACE INTO", "INSERT INTO")
+
+    if not unique_cols:
+        return sql
+
+    cols_match = re.search(r"INTO \w+\s*\(([^)]+)\)", sql)
+    if not cols_match:
+        return sql
+
+    all_cols = [c.strip() for c in cols_match.group(1).split(",")]
+    update_cols = [c for c in all_cols if c not in unique_cols and c != "id"]
+
+    conflict_target = ", ".join(unique_cols)
+    if not update_cols:
+        return f"{sql} ON CONFLICT ({conflict_target}) DO NOTHING"
+
+    set_clause = ", ".join(f"{c} = EXCLUDED.{c}" for c in update_cols)
+    return f"{sql} ON CONFLICT ({conflict_target}) DO UPDATE SET {set_clause}"
 
 
 def _postgres_upsert_sql(table: str, columns: list[str], placeholders: str) -> str:

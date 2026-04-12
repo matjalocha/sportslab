@@ -255,6 +255,8 @@ def _lookup_elo_for_side(
     # Prepare the match side: team name + date + country + preferred level
     match_side = features[["date", "league", team_col]].copy()
     match_side = match_side.rename(columns={team_col: "team"})
+    # Normalize team names so parquet names align with ELO names
+    match_side["team"] = match_side["team"].map(normalize_team_name)
     match_side["country"] = match_side["league"].map(LEAGUE_TO_COUNTRY)
     match_side["preferred_level"] = match_side["league"].map(LEAGUE_TO_LEVEL)
     match_side["date"] = pd.to_datetime(match_side["date"])

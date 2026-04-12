@@ -1,0 +1,17 @@
+.venv/
+.git/
+data/
+reports/
+predictions/
+research/
+node_modules/
+*.pyc
+__pycache__/
+.ruff_cache/
+.mypy_cache/
+.pytest_cache/
+htmlcov/
+dist/
+build/
+.env
+*.egg-info/

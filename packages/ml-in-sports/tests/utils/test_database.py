@@ -5,7 +5,11 @@ from pathlib import Path
 import pandas as pd
 import pytest
 from ml_in_sports.settings import get_settings
-from ml_in_sports.utils.database import FootballDatabase
+from ml_in_sports.utils.database import (
+    FootballDatabase,
+    _convert_insert_or_replace,
+    _unique_columns,
+)
 
 
 @pytest.fixture
@@ -222,3 +226,156 @@ def test_postgres_path_uses_mock_connection(
     assert fake_connection.closed
     monkeypatch.delenv("ML_IN_SPORTS_DATABASE_URL", raising=False)
     get_settings.cache_clear()
+
+
+# ---------------------------------------------------------------------------
+# C1: INSERT OR REPLACE -> ON CONFLICT translation
+# ---------------------------------------------------------------------------
+
+
+class TestUniqueColumns:
+    """Tests for _unique_columns() extraction from DDL."""
+
+    @pytest.mark.parametrize(
+        ("table", "expected"),
+        [
+            ("matches", ["league", "season", "game"]),
+            ("player_matches", ["league", "season", "game", "team", "player"]),
+            ("league_tables", ["league", "season", "team"]),
+            ("elo_ratings", ["team", "date"]),
+            ("fifa_ratings", ["player_name", "club_name", "fifa_version"]),
+            ("tm_players", ["player_id"]),
+            ("tm_player_valuations", ["player_id", "date"]),
+            ("tm_games", ["game_id"]),
+            ("match_odds", ["league", "season", "game"]),
+            ("shots", ["shot_id"]),
+            ("scrape_log", ["source", "league", "season"]),
+        ],
+    )
+    def test_extracts_unique_columns_for_each_table(
+        self, table: str, expected: list[str],
+    ) -> None:
+        """Every table in _TABLES_SQL has the expected UNIQUE columns."""
+        assert _unique_columns(table) == expected
+
+    def test_unknown_table_returns_empty(self) -> None:
+        """Unknown table name yields empty list."""
+        assert _unique_columns("nonexistent_table") == []
+
+
+class TestConvertInsertOrReplace:
+    """Tests for _convert_insert_or_replace()."""
+
+    def test_scrape_log_translation(self) -> None:
+        """The exact SQL used in log_scrape() translates correctly."""
+        sql = (
+            "INSERT OR REPLACE INTO scrape_log "
+            "(source, league, season, scraped_at, row_count, status) "
+            "VALUES (%s, %s, %s, %s, %s, %s)"
+        )
+        result = _convert_insert_or_replace(sql)
+        assert "INSERT OR REPLACE" not in result
+        assert "INSERT INTO scrape_log" in result
+        assert "ON CONFLICT (source, league, season)" in result
+        assert "DO UPDATE SET" in result
+        assert "scraped_at = EXCLUDED.scraped_at" in result
+        assert "row_count = EXCLUDED.row_count" in result
+        assert "status = EXCLUDED.status" in result
+        # Conflict columns must NOT appear in SET clause
+        assert "source = EXCLUDED.source" not in result
+        assert "league = EXCLUDED.league" not in result
+        assert "season = EXCLUDED.season" not in result
+
+    def test_no_match_falls_back_to_plain_insert(self) -> None:
+        """Malformed INSERT OR REPLACE without INTO is returned as-is."""
+        sql = "INSERT OR REPLACE VALUES (%s)"
+        result = _convert_insert_or_replace(sql)
+        # Cannot determine table name, so returned unchanged
+        assert result == sql
+
+    def test_missing_into_keyword_with_table(self) -> None:
+        """INSERT OR REPLACE INTO with known table but missing columns list."""
+        sql = "INSERT OR REPLACE INTO scrape_log VALUES (%s, %s, %s)"
+        result = _convert_insert_or_replace(sql)
+        # No column-list match -> plain INSERT (no ON CONFLICT appended)
+        assert result == "INSERT INTO scrape_log VALUES (%s, %s, %s)"
+
+    def test_table_without_unique_constraint(self) -> None:
+        """A hypothetical table with no UNIQUE gives a plain INSERT."""
+        sql = (
+            "INSERT OR REPLACE INTO unknown_table (a, b) VALUES (%s, %s)"
+        )
+        result = _convert_insert_or_replace(sql)
+        assert result == "INSERT INTO unknown_table (a, b) VALUES (%s, %s)"
+
+    def test_single_unique_column(self) -> None:
+        """Table with one UNIQUE column (e.g. tm_players by player_id)."""
+        sql = (
+            "INSERT OR REPLACE INTO tm_players "
+            "(player_id, name, position) VALUES (%s, %s, %s)"
+        )
+        result = _convert_insert_or_replace(sql)
+        assert "ON CONFLICT (player_id)" in result
+        assert "name = EXCLUDED.name" in result
+        assert "position = EXCLUDED.position" in result
+        assert "player_id = EXCLUDED.player_id" not in result
+
+
+class TestAdaptSqlPostgres:
+    """Tests for _adapt_sql() Postgres path, including INSERT OR REPLACE."""
+
+    @pytest.fixture
+    def pg_db(
+        self, monkeypatch: pytest.MonkeyPatch,
+    ) -> FootballDatabase:
+        """Create a FootballDatabase in Postgres mode (no real connection)."""
+        fake_conn = _FakePostgresConnection()
+        fake_psycopg2 = _FakePsycopg2(fake_conn)
+        monkeypatch.setenv(
+            "ML_IN_SPORTS_DATABASE_URL",
+            "postgresql://user:pass@localhost:5432/db",
+        )
+        get_settings.cache_clear()
+        monkeypatch.setattr(
+            "ml_in_sports.utils.database.import_module",
+            lambda name: fake_psycopg2 if name == "psycopg2" else None,
+        )
+        database = FootballDatabase()
+        yield database
+        database.close()
+        monkeypatch.delenv("ML_IN_SPORTS_DATABASE_URL", raising=False)
+        get_settings.cache_clear()
+
+    def test_log_scrape_no_insert_or_replace(
+        self, pg_db: FootballDatabase,
+    ) -> None:
+        """log_scrape on Postgres must not emit INSERT OR REPLACE."""
+        pg_db.log_scrape("understat", "ENG-Premier League", "2324", 1, "ok")
+        executed_sql = pg_db.connection.cursor_obj.executed[0][0]
+        assert "INSERT OR REPLACE" not in executed_sql
+        assert "ON CONFLICT" in executed_sql
+
+    def test_create_tables_no_autoincrement(
+        self, pg_db: FootballDatabase,
+    ) -> None:
+        """CREATE TABLE on Postgres must not contain AUTOINCREMENT."""
+        pg_db.create_tables()
+        for sql, _params in pg_db.connection.cursor_obj.executed:
+            assert "AUTOINCREMENT" not in sql, (
+                f"AUTOINCREMENT found in Postgres DDL: {sql[:80]}..."
+            )
+
+    def test_placeholder_replacement(
+        self, pg_db: FootballDatabase,
+    ) -> None:
+        """Question-mark placeholders become %s."""
+        adapted = pg_db._adapt_sql("SELECT * FROM t WHERE a = ? AND b = ?")
+        assert "?" not in adapted
+        assert "%s" in adapted
+
+    def test_sqlite_mode_returns_sql_unchanged(
+        self, db: FootballDatabase,
+    ) -> None:
+        """SQLite backend returns SQL as-is."""
+        original = "INSERT OR REPLACE INTO scrape_log (a) VALUES (?)"
+        assert db._adapt_sql(original) == original

@@ -10,6 +10,7 @@ from ml_in_sports.cli.features_cmd import features_app
 from ml_in_sports.cli.ingest_cmd import ingest_app
 from ml_in_sports.cli.kelly_cmd import kelly_app
 from ml_in_sports.cli.leakage_cmd import leakage_app
+from ml_in_sports.cli.merge_sofascore_cmd import merge_sofascore_app
 from ml_in_sports.cli.migrate_cmd import migrate_app
 from ml_in_sports.cli.notify_cmd import notify_app
 from ml_in_sports.cli.pipeline_cmd import pipeline_app
@@ -57,6 +58,11 @@ app.add_typer(features_app, name="features", help="Materialize features to Parqu
 app.add_typer(ingest_app, name="ingest", help="Ingest new league football-data CSVs.")
 app.add_typer(kelly_app, name="kelly", help="Compute Kelly stakes.")
 app.add_typer(leakage_app, name="leakage-check", help="Run automated leakage detection.")
+app.add_typer(
+    merge_sofascore_app,
+    name="merge-sofascore",
+    help="Merge Sofascore stats into features parquet.",
+)
 app.add_typer(migrate_app, name="migrate", help="Database migration tools.")
 app.add_typer(notify_app, name="notify", help="Send Telegram notifications.")
 app.add_typer(predict_app, name="predict", help="Generate daily bet recommendations.")
