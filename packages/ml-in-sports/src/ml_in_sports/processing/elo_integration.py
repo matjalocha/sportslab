@@ -225,8 +225,8 @@ def match_elo_to_features(
         total_matches=total,
         home_elo_filled=matched_home,
         away_elo_filled=matched_away,
-        home_fill_pct=round(matched_home / total * 100, 1),
-        away_fill_pct=round(matched_away / total * 100, 1),
+        home_fill_pct=round(matched_home / total * 100, 1) if total > 0 else 0.0,
+        away_fill_pct=round(matched_away / total * 100, 1) if total > 0 else 0.0,
     )
     return result
 

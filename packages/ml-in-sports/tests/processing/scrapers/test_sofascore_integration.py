@@ -6,40 +6,35 @@ import pandas as pd
 from ml_in_sports.processing.scrapers.sofascore import MatchStats
 from ml_in_sports.processing.scrapers.sofascore_integration import (
     merge_sofascore_stats,
-    normalise_team_name,
 )
+from ml_in_sports.utils.team_names import normalize_team_name
 
 # ---------------------------------------------------------------------------
-# Team name normalisation
+# Team name normalisation (canonical from utils.team_names)
 # ---------------------------------------------------------------------------
 
 
-class TestNormaliseTeamName:
-    """Tests for cross-source team name normalisation."""
-
-    def test_lowercase(self) -> None:
-        assert normalise_team_name("Arsenal") == "arsenal"
-
-    def test_strips_whitespace(self) -> None:
-        assert normalise_team_name("  Arsenal  ") == "arsenal"
+class TestNormalizeTeamName:
+    """Tests for canonical team name normalisation via utils.team_names."""
 
     def test_known_alias_man_city(self) -> None:
-        assert normalise_team_name("Man City") == "manchester city"
+        assert normalize_team_name("Man City") == "Manchester City"
 
     def test_known_alias_wolves(self) -> None:
-        assert normalise_team_name("Wolves") == "wolverhampton"
+        assert normalize_team_name("Wolves") == "Wolverhampton Wanderers"
 
     def test_known_alias_wolverhampton_wanderers(self) -> None:
-        assert normalise_team_name("Wolverhampton Wanderers") == "wolverhampton"
+        result = normalize_team_name("Wolverhampton Wanderers")
+        assert result == "Wolverhampton Wanderers"
 
     def test_known_alias_spurs(self) -> None:
-        assert normalise_team_name("Spurs") == "tottenham"
+        assert normalize_team_name("Spurs") == "Tottenham Hotspur"
 
-    def test_unknown_name_returns_lowercase(self) -> None:
-        assert normalise_team_name("Some Obscure FC") == "some obscure fc"
+    def test_unknown_name_returned_unchanged(self) -> None:
+        assert normalize_team_name("Some Obscure FC") == "Some Obscure FC"
 
     def test_known_alias_bayern(self) -> None:
-        assert normalise_team_name("Bayern Munich") == "bayern munchen"
+        assert normalize_team_name("Bayern München") == "Bayern Munich"
 
 
 # ---------------------------------------------------------------------------
@@ -155,7 +150,7 @@ class TestMergeSofascoreStats:
             "away_team": ["Wolves"],
             "date": ["2024-01-15"],
         })
-        stats = [_make_stats(200, "Manchester City", "Wolverhampton", "2024-01-15")]
+        stats = [_make_stats(200, "Manchester City", "Wolverhampton Wanderers", "2024-01-15")]
 
         result = merge_sofascore_stats(features, stats)
 

@@ -17,59 +17,9 @@ import pandas as pd
 import structlog
 
 from ml_in_sports.processing.scrapers.sofascore import MatchStats
+from ml_in_sports.utils.team_names import normalize_team_name
 
 logger = structlog.get_logger(__name__)
-
-
-# Common team name aliases across data sources.
-# Keys are lowercased variants; values are the canonical form.
-_TEAM_NAME_ALIASES: dict[str, str] = {
-    "man city": "manchester city",
-    "man utd": "manchester united",
-    "man united": "manchester united",
-    "wolves": "wolverhampton",
-    "wolverhampton wanderers": "wolverhampton",
-    "spurs": "tottenham",
-    "tottenham hotspur": "tottenham",
-    "nottingham forest": "nott'm forest",
-    "nottm forest": "nott'm forest",
-    "west ham united": "west ham",
-    "brighton and hove albion": "brighton",
-    "brighton hove albion": "brighton",
-    "leicester city": "leicester",
-    "newcastle united": "newcastle",
-    "newcastle utd": "newcastle",
-    "sheffield united": "sheffield utd",
-    "crystal palace": "crystal palace",
-    "atletico madrid": "atl. madrid",
-    "atletico de madrid": "atl. madrid",
-    "real sociedad": "sociedad",
-    "paris saint-germain": "paris sg",
-    "paris saint germain": "paris sg",
-    "bayern munich": "bayern munchen",
-    "bayern muenchen": "bayern munchen",
-    "borussia dortmund": "dortmund",
-    "borussia m.gladbach": "m'gladbach",
-    "borussia monchengladbach": "m'gladbach",
-    "inter milan": "inter",
-    "internazionale": "inter",
-    "ac milan": "milan",
-}
-
-
-def normalise_team_name(name: str) -> str:
-    """Normalise a team name for cross-source matching.
-
-    Lowercases, strips whitespace, then applies known aliases.
-
-    Args:
-        name: Raw team name from any source.
-
-    Returns:
-        Normalised lowercase team name.
-    """
-    lower = name.strip().lower()
-    return _TEAM_NAME_ALIASES.get(lower, lower)
 
 
 def _parse_date(date_str: str) -> datetime | None:
@@ -103,8 +53,8 @@ def _build_stats_lookup(
     lookup: dict[tuple[str, str, str], MatchStats] = {}
     for stats in stats_list:
         key = (
-            normalise_team_name(stats.home_team),
-            normalise_team_name(stats.away_team),
+            normalize_team_name(stats.home_team),
+            normalize_team_name(stats.away_team),
             stats.date,
         )
         lookup[key] = stats
@@ -228,8 +178,8 @@ def merge_sofascore_stats(
     unmatched = 0
 
     for _, row in features_df.iterrows():
-        home_norm = normalise_team_name(str(row[home_col]))
-        away_norm = normalise_team_name(str(row[away_col]))
+        home_norm = normalize_team_name(str(row[home_col]))
+        away_norm = normalize_team_name(str(row[away_col]))
         date_val = str(row[date_col])
 
         match = _find_match(

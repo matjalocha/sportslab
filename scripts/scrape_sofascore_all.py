@@ -27,7 +27,7 @@ TOURNAMENTS = {
     "ITA-Serie B": 53,
     "POR-Primeira Liga": 238,
     "BEL-Jupiler Pro League": 38,
-    "TUR-Super Lig": 52,
+    "TUR-Süper Lig": 52,
     "GRE-Super League": 185,
     "SCO-Premiership": 36,
     "ESP-Segunda": 54,

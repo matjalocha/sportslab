@@ -46,7 +46,7 @@ SOFASCORE_TOURNAMENTS: dict[str, int] = {
     "NED-Eredivisie": 37,
     "POR-Primeira Liga": 238,
     "BEL-Jupiler Pro League": 38,
-    "TUR-Super Lig": 52,
+    "TUR-Süper Lig": 52,
     "GRE-Super League": 185,
     "SCO-Premiership": 36,
 }
@@ -69,7 +69,7 @@ SOFASCORE_SEASON_IDS: dict[str, dict[str, int]] = {
         "NED-Eredivisie": 61641,
         "POR-Primeira Liga": 62050,
         "BEL-Jupiler Pro League": 62051,
-        "TUR-Super Lig": 62052,
+        "TUR-Süper Lig": 62052,
         "GRE-Super League": 62053,
         "SCO-Premiership": 62054,
     },

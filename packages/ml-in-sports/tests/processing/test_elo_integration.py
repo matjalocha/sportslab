@@ -306,3 +306,31 @@ class TestAddEloForm:
 
         result = _add_elo_form(df, "home", 3)
         assert result["home_elo_form_3"].isna().all()
+
+
+class TestMatchEloToFeaturesEmpty:
+    """Tests for match_elo_to_features with edge-case inputs."""
+
+    def test_empty_features_dataframe(self) -> None:
+        """Empty features DataFrame does not crash (no ZeroDivisionError)."""
+        features = pd.DataFrame({
+            "date": pd.to_datetime([]),
+            "league": pd.Series([], dtype=str),
+            "home_team": pd.Series([], dtype=str),
+            "away_team": pd.Series([], dtype=str),
+            "home_goals": pd.Series([], dtype=float),
+            "away_goals": pd.Series([], dtype=float),
+        })
+        elo = pd.DataFrame({
+            "team": ["Liverpool"],
+            "date": pd.to_datetime(["2025-03-01"]),
+            "elo": [2000.0],
+            "country": ["ENG"],
+            "level": [1],
+        })
+
+        result = match_elo_to_features(features, elo)
+
+        assert len(result) == 0
+        assert "home_elo" in result.columns
+        assert "away_elo" in result.columns
