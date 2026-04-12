@@ -9,6 +9,7 @@ import pandas as pd
 import structlog
 
 from ml_in_sports.features.basic_features import build_basic_features
+from ml_in_sports.features.expansion_pipeline import build_expansion_features
 from ml_in_sports.processing.leagues import get_league
 from ml_in_sports.processing.odds.pinnacle import (
     download_season_csv,
@@ -62,6 +63,15 @@ def ingest_league(
     raw_features = pd.concat(frames, ignore_index=True)
     raw_features = raw_features.sort_values(["league", "season", "date", "game"])
     new_features = build_basic_features(raw_features)
+    try:
+        new_features = build_expansion_features(new_features)
+    except Exception as exc:
+        logger.warning(
+            "expansion_pipeline_partial",
+            league=league,
+            error=str(exc),
+            error_type=type(exc).__name__,
+        )
     matches_added = len(new_features)
 
     combined = _append_to_parquet(new_features, output_parquet)

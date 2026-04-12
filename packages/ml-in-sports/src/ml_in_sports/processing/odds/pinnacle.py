@@ -138,7 +138,7 @@ def load_football_data_csv(csv_path: Path) -> pd.DataFrame:
         ValueError: If CSV lacks required match metadata columns
             (HomeTeam, AwayTeam).
     """
-    raw = pd.read_csv(csv_path)
+    raw = pd.read_csv(csv_path, encoding="latin-1")
 
     required = {"HomeTeam", "AwayTeam"}
     missing = required - set(raw.columns)
