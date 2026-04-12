@@ -41,6 +41,9 @@ dependencies = [
 ml = [
     "tabpfn>=6.0,<7.0",            # R2: TabPFN ensemble member (SPO-59)
 ]
+scraping = [
+    "seleniumbase>=4.25,<5.0",     # Sofascore scraper (browser-based API access)
+]
 postgres = [
     "psycopg2-binary>=2.9,<3.0",   # R4: optional Postgres backend
 ]

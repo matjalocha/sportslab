@@ -155,7 +155,6 @@
 
     "Ajax Amsterdam": ["Ajax", "AFC Ajax"],
     "PSV Eindhoven": ["PSV"],
-    "AZ Alkmaar": ["AZ"],
     "ADO Den Haag": ["Den Haag"],
     "Feyenoord": ["Feyenoord Rotterdam"],
     "Twente": ["FC Twente"],
@@ -176,8 +175,6 @@
 
     "Benfica": ["SL Benfica"],
     "Porto": ["FC Porto"],
-    "Sporting CP": ["Sporting", "Sporting Lisbon"],
-    "Braga": ["Sporting Braga", "SC Braga"],
     "Vitoria Guimaraes": ["Guimaraes", "Vitoria Guimarães"],
 
     "Club Brugge": ["Club Brugge KV", "Brugge"],
@@ -197,5 +194,32 @@
     "Slavia Prague": ["Slavia Praha"],
     "Viktoria Plzen": ["Viktoria Plzeň", "Plzen"],
     "Banik Ostrava": ["Baník Ostrava"],
-    "Slovan Liberec": ["Liberec"]
+    "Slovan Liberec": ["Liberec"],
+
+    "Sp Braga": ["Braga", "Sporting Braga", "SC Braga"],
+    "Sp Lisbon": ["Sporting", "Sporting CP", "Sporting Lisbon"],
+    "Est Amadora": ["Estrela Amadora"],
+    "AVS": ["AVS Futebol"],
+
+    "AZ Alkmaar": ["AZ", "Alkmaar"],
+    "Almere City": ["Almere"],
+    "NAC Breda": ["Breda"],
+    "For Sittard": ["Sittard", "Fortuna Sittard"],
+
+    "St. Gilloise": ["St Gillis", "Union Saint-Gilloise", "Union SG"],
+    "Oud-Heverlee Leuven": ["Leuven", "OH Leuven"],
+    "Beerschot VA": ["Beerschot AC", "Beerschot"],
+
+    "Buyuksehyr": ["Bueyueksehir", "Istanbul Buyuksehir"],
+    "Ad. Demirspor": ["Adana Demirspor"],
+    "Bodrumspor": ["Bodrum"],
+    "Gaziantep": ["Gaziantep FK"],
+    "Goztep": ["Goeztepe", "Goztepe"],
+    "Kayserispor": ["Kayseri", "Kayserispor FK"],
+    "Athens Kallithea": ["Kalithea"],
+    "Niki Volos": ["NFC Volos", "Volos NFC"],
+
+    "Kaiserslautern": ["Lautern", "1. FC Kaiserslautern"],
+    "Sudtirol": ["Suedtirol", "FC Sudtirol", "FC Suedtirol"],
+    "Pau FC": ["Pau"]
 }

@@ -5,6 +5,7 @@ import typer
 from ml_in_sports.cli.backtest_cmd import backtest_app
 from ml_in_sports.cli.download_leagues_cmd import download_leagues_app
 from ml_in_sports.cli.download_odds_cmd import download_odds_app
+from ml_in_sports.cli.elo_cmd import elo_app
 from ml_in_sports.cli.features_cmd import features_app
 from ml_in_sports.cli.ingest_cmd import ingest_app
 from ml_in_sports.cli.kelly_cmd import kelly_app
@@ -15,6 +16,7 @@ from ml_in_sports.cli.pipeline_cmd import pipeline_app
 from ml_in_sports.cli.predict_cmd import predict_app
 from ml_in_sports.cli.refresh_cmd import refresh_app
 from ml_in_sports.cli.results_cmd import results_app
+from ml_in_sports.cli.scrape_sofascore_cmd import scrape_sofascore_app
 from ml_in_sports.cli.weekly_cmd import weekly_app
 from ml_in_sports.logging import configure_logging
 
@@ -49,6 +51,7 @@ app.add_typer(
     help="Download football-data CSVs for registered leagues.",
 )
 app.add_typer(download_odds_app, name="download-odds", help="Download Pinnacle odds CSVs.")
+app.add_typer(elo_app, name="elo", help="Update ClubElo ratings in features parquet.")
 app.add_typer(pipeline_app, name="pipeline", help="Run data pipeline.")
 app.add_typer(features_app, name="features", help="Materialize features to Parquet.")
 app.add_typer(ingest_app, name="ingest", help="Ingest new league football-data CSVs.")
@@ -59,4 +62,9 @@ app.add_typer(notify_app, name="notify", help="Send Telegram notifications.")
 app.add_typer(predict_app, name="predict", help="Generate daily bet recommendations.")
 app.add_typer(refresh_app, name="refresh", help="Refresh current season data.")
 app.add_typer(results_app, name="results", help="Process daily bet results.")
+app.add_typer(
+    scrape_sofascore_app,
+    name="scrape-sofascore",
+    help="Scrape match stats from Sofascore.",
+)
 app.add_typer(weekly_app, name="weekly", help="Generate weekly performance report.")

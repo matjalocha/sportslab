@@ -220,7 +220,7 @@ class TestExtendedLeagueTeamNames:
 
     def test_other_r5a_aliases(self) -> None:
         """Popular aliases from other R5a leagues map correctly."""
-        assert normalize_team_name("Sporting Lisbon") == "Sporting CP"
+        assert normalize_team_name("Sporting Lisbon") == "Sp Lisbon"
         assert normalize_team_name("Brugge") == "Club Brugge"
         assert normalize_team_name("Fenerbahçe") == "Fenerbahce"
         assert normalize_team_name("Sparta Praha") == "Sparta Prague"
@@ -229,7 +229,7 @@ class TestExtendedLeagueTeamNames:
         """Major extended-league teams are in ALL_KNOWN_TEAMS."""
         teams = [
             "Ajax Amsterdam", "PSV Eindhoven", "Legia Warszawa",
-            "Lech Poznan", "Sporting CP", "Club Brugge",
+            "Lech Poznan", "Sp Lisbon", "Club Brugge",
             "Galatasaray", "Sparta Prague",
         ]
         for team in teams:

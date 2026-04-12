@@ -95,6 +95,7 @@ module = [
     "tabpfn.*",
     "plotly.*",
     "jinja2.*",
+    "seleniumbase.*",
 ]
 ignore_missing_imports = true
 

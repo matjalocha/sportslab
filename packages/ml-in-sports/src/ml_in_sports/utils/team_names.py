@@ -112,11 +112,19 @@ ALL_KNOWN_TEAMS: frozenset[str] = frozenset({
     "Legia Warszawa", "Lech Poznan", "MKS Cracovia", "Piast Gliwice",
     "Wisla Krakow", "Gornik Zabrze", "Jagiellonia Bialystok",
     "Rakow Czestochowa", "Pogon Szczecin", "Slask Wroclaw",
-    "Benfica", "Porto", "Sporting CP", "Braga", "Vitoria Guimaraes",
+    "Benfica", "Porto", "Vitoria Guimaraes",
     "Club Brugge", "Anderlecht", "Genk", "Gent", "Standard Liege",
     "Antwerp", "Galatasaray", "Fenerbahce", "Besiktas", "Trabzonspor",
     "Istanbul Basaksehir", "Sparta Prague", "Slavia Prague",
     "Viktoria Plzen", "Banik Ostrava", "Slovan Liberec",
+    # Expansion league additions (ClubElo integration)
+    "Sp Braga", "Sp Lisbon", "Est Amadora", "AVS",
+    "Almere City", "NAC Breda", "For Sittard",
+    "St. Gilloise", "Oud-Heverlee Leuven", "Beerschot VA",
+    "Buyuksehyr", "Ad. Demirspor", "Bodrumspor",
+    "Gaziantep", "Goztep", "Kayserispor",
+    "Athens Kallithea", "Niki Volos",
+    "Kaiserslautern", "Sudtirol", "Pau FC",
 })
 
 
