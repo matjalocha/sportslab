@@ -20,18 +20,20 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "packages" / "ml
 import soccerdata as sd
 
 # Tournament IDs from Sofascore
+# Order: leagues with no/partial data first, then nearly-complete ones.
+# This avoids burning the rate-limit on Championship before reaching other leagues.
 TOURNAMENTS = {
-    "ENG-Championship": 18,
     "NED-Eredivisie": 37,
     "GER-Bundesliga 2": 44,
     "ITA-Serie B": 53,
     "POR-Primeira Liga": 238,
-    "BEL-Jupiler Pro League": 38,
     "TUR-Süper Lig": 52,
     "GRE-Super League": 185,
     "SCO-Premiership": 36,
     "ESP-Segunda": 54,
     "FRA-Ligue 2": 182,
+    "BEL-Jupiler Pro League": 38,
+    "ENG-Championship": 18,
 }
 
 # Our target seasons (matching Top-5 range: 14/15 to 25/26)
@@ -41,7 +43,7 @@ TARGET_SEASON_NAMES = [
 ]
 
 CACHE_DIR = Path("data/sofascore")
-RATE_LIMIT = 2.0  # seconds between API calls
+RATE_LIMIT = 3.0  # seconds between API calls (bumped from 2s to avoid IP blocks)
 
 
 def get_session():
