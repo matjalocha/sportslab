@@ -35,6 +35,57 @@ uv run pytest
 
 Wszystkie powinny zakończyć się sukcesem (w P0 tylko `packages/ml-in-sports` ma kod; reszta to szkielety).
 
+## Pre-commit hooks
+
+Pre-commit uruchamia lokalne sprawdzenia przed każdym commitem — wyłapuje błędy zanim trafią do CI.
+
+### Instalacja
+
+```bash
+uv run pre-commit install
+```
+
+Wystarczy raz po sklonowaniu repo. Hooki działają automatycznie przy każdym `git commit`.
+
+### Uruchomienie ręczne na wszystkich plikach
+
+```bash
+uv run pre-commit run --all-files
+```
+
+Przydatne przy pierwszej instalacji lub po zmianie konfiguracji hooków.
+
+### Co sprawdza każdy hook
+
+| Hook | Co robi |
+|---|---|
+| `trailing-whitespace` | Usuwa spacje na końcu linii |
+| `end-of-file-fixer` | Upewnia się że pliki kończą newline |
+| `check-yaml` | Waliduje składnię plików YAML |
+| `check-toml` | Waliduje składnię plików TOML |
+| `check-json` | Waliduje składnię plików JSON |
+| `check-merge-conflict` | Blokuje commit z markerami `<<<<<<` |
+| `check-added-large-files` | Blokuje pliki > 500 KB |
+| `mixed-line-ending` | Wymusza LF (Unix) zamiast CRLF |
+| `detect-private-key` | Blokuje klucze prywatne (PEM, RSA) |
+| `no-commit-to-branch` | Blokuje bezpośredni commit do `main` |
+| `ruff` | Lint Python + autofix |
+| `ruff-format` | Formatowanie Python |
+| `gitleaks` | Skanuje pod kątem sekretów (tokeny, hasła, klucze API) |
+| `mypy` | Sprawdzanie typów Python (`--strict`) na całym workspace |
+
+### Pomijanie hooków
+
+`--no-verify` jest **zakazane** zgodnie z regułami projektu (`.claude/CLAUDE.md`) i blokowane przez CI.
+
+W wyjątkowych sytuacjach (np. WIP commit na prywatnym branchu, który zostanie przed merge poprawiony) możesz pominąć konkretny hook:
+
+```bash
+SKIP=mypy git commit -m "wip: ..."
+```
+
+Użycie `SKIP=` wymaga uzasadnienia w opisie PR lub komentarzu do commitu. Nigdy nie pomijaj `gitleaks`, `detect-private-key` ani `no-commit-to-branch`.
+
 ## Struktura monorepo
 
 Szczegóły: [ideas/phase_0_foundations/repo_strategy.md](ideas/phase_0_foundations/repo_strategy.md).

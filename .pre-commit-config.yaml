@@ -13,6 +13,8 @@ repos:
       - id: mixed-line-ending
         args: ["--fix=lf"]
       - id: detect-private-key
+      - id: no-commit-to-branch
+        args: ["--branch", "main"]
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.6.9
@@ -21,10 +23,21 @@ repos:
         args: ["--fix", "--exit-non-zero-on-fix"]
       - id: ruff-format
 
-  # mypy runs in CI (GitHub Actions) — too slow for pre-commit with all deps.
-  # Use `uv run mypy packages` locally before pushing.
-
+  # gitleaks covers detect-secrets use case with better entropy analysis.
   - repo: https://github.com/gitleaks/gitleaks
     rev: v8.18.4
     hooks:
       - id: gitleaks
+
+  # mypy — pass_filenames=false so it checks the full workspace, not just
+  # staged files (per-file mypy produces false positives on cross-module types).
+  # Runs last; takes ~5-15s depending on workspace size.
+  - repo: local
+    hooks:
+      - id: mypy
+        name: mypy
+        language: system
+        entry: uv run mypy
+        args: [packages, apps, --strict]
+        pass_filenames: false
+        types: [python]
