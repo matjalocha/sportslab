@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" fill="none">
+  <defs>
+    <radialGradient id="cornerGlowB" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(0 0) rotate(35) scale(620 620)">
+      <stop offset="0" stop-color="#5B67F2" stop-opacity="0.20"></stop>
+      <stop offset="1" stop-color="#5B67F2" stop-opacity="0"></stop>
+    </radialGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="#0B0D14"></rect>
+  <rect width="1200" height="630" fill="url(#cornerGlowB)"></rect>
+
+  
+  <g transform="translate(500 180)">
+    
+    <path d="M 148 54 C 134 38, 100 38, 86 54 C 72 70, 80 94, 100 104 L 132 116 C 154 124, 158 146, 142 162 C 126 178, 94 178, 80 162" stroke="#22C55E" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+    
+    <path d="M 80 66 L 80 160 L 164 160" stroke="#22C55E" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.3"></path>
+  </g>
+
+  
+  <text x="600" y="454" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="56" font-weight="700" letter-spacing="-0.02em" fill="#E8EAED">
+    Value bets, mathematically proven.
+  </text>
+
+  
+  <line x1="540" y1="490" x2="660" y2="490" stroke="#2A2D38" stroke-width="1"></line>
+
+  
+  <g font-family="&#39;JetBrains Mono&#39;, ui-monospace, monospace" font-size="18">
+    <text x="600" y="528" text-anchor="middle">
+      <tspan fill="#9AA0A6">CLV </tspan><tspan fill="#E8EAED" font-weight="500">+2.8%</tspan><tspan fill="#9AA0A6">   •   ROI </tspan><tspan fill="#E8EAED" font-weight="500">+4.2%</tspan><tspan fill="#9AA0A6">   •   </tspan><tspan fill="#E8EAED" font-weight="500">14</tspan><tspan fill="#9AA0A6"> leagues</tspan>
+    </text>
+  </g>
+
+  
+  <text x="1140" y="590" text-anchor="end" font-family="&#39;JetBrains Mono&#39;, ui-monospace, monospace" font-size="14" fill="#9AA0A6">
+    sportslab.dev
+  </text>
+</svg>

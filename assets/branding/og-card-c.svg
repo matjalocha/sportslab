@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" fill="none">
+  <defs>
+    <radialGradient id="cornerGlowC" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(0 0) rotate(35) scale(620 620)">
+      <stop offset="0" stop-color="#5B67F2" stop-opacity="0.20"></stop>
+      <stop offset="1" stop-color="#5B67F2" stop-opacity="0"></stop>
+    </radialGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="#0B0D14"></rect>
+  <rect width="1200" height="630" fill="url(#cornerGlowC)"></rect>
+
+  
+  
+  <line x1="0" y1="80" x2="1200" y2="80" stroke="#2A2D38" stroke-width="1"></line>
+
+  
+  <g transform="translate(60 16)">
+    <path d="M 36 13 C 32 9, 24 9, 20 13 C 16 17, 18 23, 24 25 L 32 28 C 38 31, 39 36, 35 40 C 31 44, 23 44, 19 40" stroke="#22C55E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+    <path d="M 19 17 L 19 40 L 40 40" stroke="#22C55E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.3"></path>
+  </g>
+
+  
+  <text x="1140" y="50" text-anchor="end" font-family="&#39;JetBrains Mono&#39;, ui-monospace, monospace" font-size="14" fill="#9AA0A6">
+    sportslab.dev
+  </text>
+
+  
+  <line x1="400" y1="80" x2="400" y2="590" stroke="#2A2D38" stroke-width="1"></line>
+  <line x1="800" y1="80" x2="800" y2="590" stroke="#2A2D38" stroke-width="1"></line>
+
+  
+  <line x1="0" y1="590" x2="1200" y2="590" stroke="#2A2D38" stroke-width="1"></line>
+
+  
+  <g>
+    
+    <text x="60" y="132" font-family="Inter, system-ui, sans-serif" font-size="11" font-weight="600" fill="#9AA0A6" letter-spacing="0.1em">CALIBRATION</text>
+
+    
+    
+    <line x1="60" y1="390" x2="340" y2="390" stroke="#2A2D38" stroke-width="1"></line>
+    <line x1="60" y1="170" x2="60" y2="390" stroke="#2A2D38" stroke-width="1"></line>
+    
+    <line x1="60" y1="390" x2="340" y2="170" stroke="#2A2D38" stroke-width="1.5" stroke-dasharray="4 5"></line>
+    
+    <path d="M 60 370&#xA;             C 110 370, 140 340, 200 280&#xA;             C 260 220, 290 190, 340 188" stroke="#5B67F2" stroke-width="2" stroke-linecap="round" fill="none"></path>
+
+    
+    <text x="60" y="460" font-family="&#39;JetBrains Mono&#39;, ui-monospace, monospace" font-size="32" font-weight="700" fill="#22C55E">ECE 1.4%</text>
+    <text x="60" y="486" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#9AA0A6">expected calibration error</text>
+  </g>
+
+  
+  <g>
+    <text x="420" y="132" font-family="Inter, system-ui, sans-serif" font-size="11" font-weight="600" fill="#9AA0A6" letter-spacing="0.1em">EQUITY CURVE 30D</text>
+
+    
+    <line x1="420" y1="390" x2="780" y2="390" stroke="#2A2D38" stroke-width="1"></line>
+    
+    <line x1="420" y1="270" x2="780" y2="270" stroke="#2A2D38" stroke-width="1" opacity="0.5"></line>
+    <line x1="420" y1="330" x2="780" y2="330" stroke="#2A2D38" stroke-width="1" opacity="0.5"></line>
+
+    
+    <path d="M 420 370&#xA;             C 450 366, 470 350, 500 348&#xA;             C 530 346, 550 360, 580 344&#xA;             C 610 326, 640 296, 680 282&#xA;             C 720 268, 750 232, 780 200" stroke="#22C55E" stroke-width="2.5" stroke-linecap="round" fill="none"></path>
+    
+    <path d="M 420 370&#xA;             C 450 366, 470 350, 500 348&#xA;             C 530 346, 550 360, 580 344&#xA;             C 610 326, 640 296, 680 282&#xA;             C 720 268, 750 232, 780 200&#xA;             L 780 390 L 420 390 Z" fill="#22C55E" opacity="0.06"></path>
+
+    <text x="420" y="460" font-family="&#39;JetBrains Mono&#39;, ui-monospace, monospace" font-size="32" font-weight="700" fill="#22C55E">CLV +2.8%</text>
+    <text x="420" y="486" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#9AA0A6">vs closing line, rolling 30d</text>
+  </g>
+
+  
+  <g>
+    <text x="820" y="132" font-family="Inter, system-ui, sans-serif" font-size="11" font-weight="600" fill="#9AA0A6" letter-spacing="0.1em">COVERAGE</text>
+
+    
+    <g fill="#5B67F2">
+      
+      <circle cx="860" cy="220" r="8"></circle>
+      <circle cx="920" cy="220" r="8" opacity="0.4"></circle>
+      <circle cx="980" cy="220" r="8"></circle>
+      
+      <circle cx="860" cy="280" r="8" opacity="0.4"></circle>
+      <circle cx="920" cy="280" r="8"></circle>
+      <circle cx="980" cy="280" r="8" opacity="0.4"></circle>
+      
+      <circle cx="860" cy="340" r="8"></circle>
+      <circle cx="920" cy="340" r="8" opacity="0.4"></circle>
+      <circle cx="980" cy="340" r="8"></circle>
+    </g>
+
+    
+    <text x="820" y="460" font-family="&#39;JetBrains Mono&#39;, ui-monospace, monospace" font-size="32" font-weight="700" fill="#E8EAED">14 leagues</text>
+    
+    <text x="820" y="494" font-family="&#39;JetBrains Mono&#39;, ui-monospace, monospace" font-size="16" fill="#9AA0A6">935 features</text>
+  </g>
+</svg>

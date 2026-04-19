@@ -1,0 +1,221 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080" fill="none">
+  <defs>
+    
+    <linearGradient id="curveGrad" x1="0.05" y1="0.75" x2="0.95" y2="0.18">
+      <stop offset="0" stop-color="#5B67F2" stop-opacity="0"></stop>
+      <stop offset="0.08" stop-color="#5B67F2" stop-opacity="0.35"></stop>
+      <stop offset="0.35" stop-color="#5B67F2" stop-opacity="1"></stop>
+      <stop offset="0.70" stop-color="#5B67F2" stop-opacity="1"></stop>
+      <stop offset="0.88" stop-color="#22C55E" stop-opacity="1"></stop>
+      <stop offset="1" stop-color="#22C55E" stop-opacity="1"></stop>
+    </linearGradient>
+    <linearGradient id="curveGlowGrad" x1="0.05" y1="0.75" x2="0.95" y2="0.18">
+      <stop offset="0" stop-color="#5B67F2" stop-opacity="0"></stop>
+      <stop offset="0.2" stop-color="#5B67F2" stop-opacity="0.55"></stop>
+      <stop offset="0.7" stop-color="#5B67F2" stop-opacity="0.85"></stop>
+      <stop offset="0.9" stop-color="#22C55E" stop-opacity="0.85"></stop>
+      <stop offset="1" stop-color="#22C55E" stop-opacity="0.7"></stop>
+    </linearGradient>
+
+    
+    <radialGradient id="haloIndigo" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1020 640) scale(560 340)">
+      <stop offset="0" stop-color="#5B67F2" stop-opacity="0.18"></stop>
+      <stop offset="0.55" stop-color="#5B67F2" stop-opacity="0.04"></stop>
+      <stop offset="1" stop-color="#5B67F2" stop-opacity="0"></stop>
+    </radialGradient>
+    <radialGradient id="haloGreen" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1620 340) scale(420 260)">
+      <stop offset="0" stop-color="#22C55E" stop-opacity="0.18"></stop>
+      <stop offset="0.6" stop-color="#22C55E" stop-opacity="0.04"></stop>
+      <stop offset="1" stop-color="#22C55E" stop-opacity="0"></stop>
+    </radialGradient>
+
+    
+    <linearGradient id="mistBand" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#5B67F2" stop-opacity="0"></stop>
+      <stop offset="0.35" stop-color="#5B67F2" stop-opacity="0.03"></stop>
+      <stop offset="0.65" stop-color="#5B67F2" stop-opacity="0.03"></stop>
+      <stop offset="1" stop-color="#5B67F2" stop-opacity="0"></stop>
+    </linearGradient>
+    <linearGradient id="mistFade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0"></stop>
+      <stop offset="0.5" stop-color="#ffffff" stop-opacity="1"></stop>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"></stop>
+    </linearGradient>
+    <mask id="mistMask">
+      <rect x="0" y="480" width="1920" height="160" fill="url(#mistFade)"></rect>
+    </mask>
+
+    
+    <radialGradient id="gridFade" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1200 540) scale(820 520)">
+      <stop offset="0" stop-color="#000000" stop-opacity="0"></stop>
+      <stop offset="0.55" stop-color="#000000" stop-opacity="0"></stop>
+      <stop offset="1" stop-color="#0B0D14" stop-opacity="1"></stop>
+    </radialGradient>
+
+    
+    <radialGradient id="vignette" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(960 540) scale(1200 760)">
+      <stop offset="0.70" stop-color="#0B0D14" stop-opacity="0"></stop>
+      <stop offset="1" stop-color="#000000" stop-opacity="0.95"></stop>
+    </radialGradient>
+
+    
+    <filter id="softBloom" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="b"></feGaussianBlur>
+      <feMerge><feMergeNode in="b"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge>
+    </filter>
+    <filter id="bigBloom" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="22"></feGaussianBlur>
+    </filter>
+    <filter id="hugeBloom" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="44"></feGaussianBlur>
+    </filter>
+    
+    <filter id="ambientBloom" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="64"></feGaussianBlur>
+    </filter>
+    <filter id="pointGlow" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="5"></feGaussianBlur>
+    </filter>
+    <filter id="edgeDof" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur stdDeviation="1.2"></feGaussianBlur>
+    </filter>
+    <filter id="starburstGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="1.2"></feGaussianBlur>
+    </filter>
+
+    
+    <filter id="filmGrain" x="0" y="0" width="1" height="1">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="11"></feTurbulence>
+      <feColorMatrix values="0 0 0 0 0&#xA;                             0 0 0 0 0&#xA;                             0 0 0 0 0&#xA;                             0 0 0 0.06 0"></feColorMatrix>
+    </filter>
+  </defs>
+
+  
+  <rect width="1920" height="1080" fill="#0B0D14"></rect>
+
+  
+  <rect width="1920" height="1080" fill="url(#haloIndigo)"></rect>
+  <rect width="1920" height="1080" fill="url(#haloGreen)"></rect>
+
+  
+  <g mask="url(#mistMask)">
+    <rect x="0" y="480" width="1920" height="160" fill="url(#mistBand)"></rect>
+  </g>
+
+  
+  <g fill="#ffffff">
+    <circle cx="120" cy="220" r="1" opacity="0.18"></circle>
+    <circle cx="260" cy="540" r="1" opacity="0.22"></circle>
+    <circle cx="95" cy="720" r="1" opacity="0.15"></circle>
+    <circle cx="380" cy="310" r="1" opacity="0.20"></circle>
+    <circle cx="475" cy="820" r="1" opacity="0.17"></circle>
+    <circle cx="560" cy="420" r="1" opacity="0.24"></circle>
+    <circle cx="640" cy="670" r="1" opacity="0.19"></circle>
+    <circle cx="710" cy="180" r="1" opacity="0.16"></circle>
+    <circle cx="780" cy="560" r="1" opacity="0.23"></circle>
+    <circle cx="830" cy="880" r="1" opacity="0.15"></circle>
+    <circle cx="910" cy="340" r="1" opacity="0.21"></circle>
+    <circle cx="980" cy="640" r="1" opacity="0.18"></circle>
+    <circle cx="1040" cy="250" r="1" opacity="0.17"></circle>
+    <circle cx="150" cy="910" r="1" opacity="0.20"></circle>
+    <circle cx="340" cy="140" r="1" opacity="0.15"></circle>
+    <circle cx="520" cy="280" r="1" opacity="0.22"></circle>
+    <circle cx="680" cy="460" r="1" opacity="0.16"></circle>
+    <circle cx="860" cy="740" r="1" opacity="0.19"></circle>
+  </g>
+
+  
+  <g opacity="0.55">
+    <g stroke="#2A3250" stroke-width="1" opacity="0.6">
+      <line x1="0" y1="220" x2="1920" y2="220"></line>
+      <line x1="0" y1="320" x2="1920" y2="320"></line>
+      <line x1="0" y1="420" x2="1920" y2="420"></line>
+      <line x1="0" y1="520" x2="1920" y2="520"></line>
+      <line x1="0" y1="620" x2="1920" y2="620"></line>
+      <line x1="0" y1="720" x2="1920" y2="720"></line>
+      <line x1="0" y1="820" x2="1920" y2="820"></line>
+      <line x1="240" y1="0" x2="240" y2="1080"></line>
+      <line x1="440" y1="0" x2="440" y2="1080"></line>
+      <line x1="640" y1="0" x2="640" y2="1080"></line>
+      <line x1="840" y1="0" x2="840" y2="1080"></line>
+      <line x1="1040" y1="0" x2="1040" y2="1080"></line>
+      <line x1="1240" y1="0" x2="1240" y2="1080"></line>
+      <line x1="1440" y1="0" x2="1440" y2="1080"></line>
+      <line x1="1640" y1="0" x2="1640" y2="1080"></line>
+    </g>
+    <g stroke="#1E2236" stroke-width="0.6" opacity="0.55">
+      <line x1="0" y1="270" x2="1920" y2="270"></line>
+      <line x1="0" y1="370" x2="1920" y2="370"></line>
+      <line x1="0" y1="470" x2="1920" y2="470"></line>
+      <line x1="0" y1="570" x2="1920" y2="570"></line>
+      <line x1="0" y1="670" x2="1920" y2="670"></line>
+      <line x1="0" y1="770" x2="1920" y2="770"></line>
+      <line x1="340" y1="0" x2="340" y2="1080"></line>
+      <line x1="540" y1="0" x2="540" y2="1080"></line>
+      <line x1="740" y1="0" x2="740" y2="1080"></line>
+      <line x1="940" y1="0" x2="940" y2="1080"></line>
+      <line x1="1140" y1="0" x2="1140" y2="1080"></line>
+      <line x1="1340" y1="0" x2="1340" y2="1080"></line>
+      <line x1="1540" y1="0" x2="1540" y2="1080"></line>
+      <line x1="1740" y1="0" x2="1740" y2="1080"></line>
+    </g>
+  </g>
+
+  <rect width="1920" height="1080" fill="url(#gridFade)"></rect>
+
+  
+  
+  <path d="M 820 780 C 980 775, 1120 760, 1240 720 C 1360 680, 1460 620, 1540 540 C 1620 460, 1680 380, 1720 280" stroke="url(#curveGlowGrad)" stroke-width="44" fill="none" opacity="0.18" filter="url(#ambientBloom)"></path>
+  
+  <path d="M 820 780 C 980 775, 1120 760, 1240 720 C 1360 680, 1460 620, 1540 540 C 1620 460, 1680 380, 1720 280" stroke="url(#curveGlowGrad)" stroke-width="30" fill="none" opacity="0.35" filter="url(#hugeBloom)"></path>
+  
+  <path d="M 820 780 C 980 775, 1120 760, 1240 720 C 1360 680, 1460 620, 1540 540 C 1620 460, 1680 380, 1720 280" stroke="url(#curveGlowGrad)" stroke-width="14" fill="none" opacity="0.55" filter="url(#bigBloom)"></path>
+  
+  <path d="M 820 780 C 980 775, 1120 760, 1240 720 C 1360 680, 1460 620, 1540 540 C 1620 460, 1680 380, 1720 280" stroke="url(#curveGlowGrad)" stroke-width="6" fill="none" opacity="0.75" filter="url(#softBloom)"></path>
+
+  
+  <path d="M 1240 722 C 1360 682, 1460 622, 1540 542 C 1620 462, 1680 382, 1720 282" stroke="#5B67F2" stroke-width="1.6" fill="none" opacity="0.15" stroke-linecap="round"></path>
+  <path d="M 1240 718 C 1360 678, 1460 618, 1540 538 C 1620 458, 1680 378, 1720 278" stroke="#22C55E" stroke-width="1.6" fill="none" opacity="0.15" stroke-linecap="round"></path>
+
+  
+  <path d="M 820 780 C 980 775, 1120 760, 1240 720 C 1360 680, 1460 620, 1540 540 C 1620 460, 1680 380, 1720 280" stroke="url(#curveGrad)" stroke-width="2.8" fill="none" opacity="0.7" filter="url(#edgeDof)"></path>
+
+  
+  <path d="M 820 780 C 980 775, 1120 760, 1240 720 C 1360 680, 1460 620, 1540 540 C 1620 460, 1680 380, 1720 280" stroke="url(#curveGrad)" stroke-width="1.8" fill="none" stroke-linecap="round"></path>
+
+  
+  <g>
+    <circle cx="960" cy="776" r="10" fill="#5B67F2" opacity="0.2" filter="url(#pointGlow)"></circle>
+    <circle cx="960" cy="776" r="2.6" fill="#5B67F2"></circle>
+    <circle cx="960" cy="776" r="1" fill="#0B0D14"></circle>
+
+    <circle cx="1180" cy="740" r="11" fill="#5B67F2" opacity="0.25" filter="url(#pointGlow)"></circle>
+    <circle cx="1180" cy="740" r="2.8" fill="#5B67F2"></circle>
+    <circle cx="1180" cy="740" r="1" fill="#0B0D14"></circle>
+
+    <circle cx="1390" cy="660" r="12" fill="#5B67F2" opacity="0.3" filter="url(#pointGlow)"></circle>
+    <circle cx="1390" cy="660" r="3" fill="#7A84FF"></circle>
+    <circle cx="1390" cy="660" r="1.1" fill="#0B0D14"></circle>
+
+    <circle cx="1560" cy="520" r="12" fill="#5B67F2" opacity="0.3" filter="url(#pointGlow)"></circle>
+    <circle cx="1560" cy="520" r="3" fill="#6FE39A"></circle>
+    <circle cx="1560" cy="520" r="1.1" fill="#0B0D14"></circle>
+
+    
+    <circle cx="1700" cy="306" r="16" fill="#22C55E" opacity="0.35" filter="url(#pointGlow)"></circle>
+    <g stroke="#22C55E" stroke-width="1" stroke-linecap="round" opacity="0.4" filter="url(#starburstGlow)">
+      <line x1="1700" y1="282" x2="1700" y2="330"></line>
+      <line x1="1676" y1="306" x2="1724" y2="306"></line>
+      <line x1="1683" y1="289" x2="1717" y2="323"></line>
+      <line x1="1717" y1="289" x2="1683" y2="323"></line>
+    </g>
+    <circle cx="1700" cy="306" r="3.6" fill="#22C55E"></circle>
+    <circle cx="1700" cy="306" r="1.3" fill="#0B0D14"></circle>
+  </g>
+
+  
+  <rect width="1920" height="1080" fill="url(#vignette)"></rect>
+
+  
+  <rect width="1920" height="1080" filter="url(#filmGrain)" style="mix-blend-mode:overlay"></rect>
+</svg>

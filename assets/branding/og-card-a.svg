@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" fill="none">
+  <defs>
+    <radialGradient id="cornerGlowA" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(0 0) rotate(35) scale(620 620)">
+      <stop offset="0" stop-color="#5B67F2" stop-opacity="0.20"></stop>
+      <stop offset="1" stop-color="#5B67F2" stop-opacity="0"></stop>
+    </radialGradient>
+    <clipPath id="chartClipA">
+      <rect x="540" y="120" width="600" height="390"></rect>
+    </clipPath>
+  </defs>
+
+  
+  <rect width="1200" height="630" fill="#0B0D14"></rect>
+  <rect width="1200" height="630" fill="url(#cornerGlowA)"></rect>
+
+  
+  <line x1="480" y1="60" x2="480" y2="570" stroke="#2A2D38" stroke-width="1"></line>
+
+  
+  
+  <g transform="translate(60 60)">
+    
+    <path d="M 118 44 C 106 30, 80 30, 68 44 C 56 58, 62 78, 80 86 L 106 96 C 124 104, 128 122, 114 136 C 100 150, 74 150, 62 136" stroke="#22C55E" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+    
+    <path d="M 62 54 L 62 134 L 130 134" stroke="#22C55E" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.3"></path>
+  </g>
+
+  
+  <g font-family="Inter, system-ui, sans-serif" fill="#E8EAED">
+    <text x="60" y="310" font-size="48" font-weight="700" letter-spacing="-0.02em">Value bets,</text>
+    <text x="60" y="364" font-size="48" font-weight="700" letter-spacing="-0.02em">mathematically proven.</text>
+  </g>
+
+  
+  <text x="60" y="404" font-family="Inter, system-ui, sans-serif" font-size="18" font-weight="400" fill="#9AA0A6">
+    B2B analytics panel for ML-literate bettors
+  </text>
+
+  
+  
+  <g stroke="#2A2D38" stroke-width="1" opacity="0.5">
+    
+    <line x1="560" y1="140" x2="560" y2="490"></line>
+    <line x1="660" y1="140" x2="660" y2="490"></line>
+    <line x1="760" y1="140" x2="760" y2="490"></line>
+    <line x1="860" y1="140" x2="860" y2="490"></line>
+    <line x1="960" y1="140" x2="960" y2="490"></line>
+    <line x1="1060" y1="140" x2="1060" y2="490"></line>
+    
+    <line x1="540" y1="180" x2="1140" y2="180"></line>
+    <line x1="540" y1="240" x2="1140" y2="240"></line>
+    <line x1="540" y1="300" x2="1140" y2="300"></line>
+    <line x1="540" y1="360" x2="1140" y2="360"></line>
+    <line x1="540" y1="420" x2="1140" y2="420"></line>
+    <line x1="540" y1="480" x2="1140" y2="480"></line>
+  </g>
+
+  
+  <path d="M 540 460&#xA;           C 575 450, 600 430, 625 425&#xA;           C 655 420, 680 445, 710 430&#xA;           C 745 410, 770 380, 800 370&#xA;           C 830 360, 860 378, 895 350&#xA;           C 930 320, 960 285, 995 260&#xA;           C 1025 240, 1055 220, 1090 195&#xA;           L 1120 175" stroke="#22C55E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+
+  
+  <path d="M 540 460&#xA;           C 575 450, 600 430, 625 425&#xA;           C 655 420, 680 445, 710 430&#xA;           C 745 410, 770 380, 800 370&#xA;           C 830 360, 860 378, 895 350&#xA;           C 930 320, 960 285, 995 260&#xA;           C 1025 240, 1055 220, 1090 195&#xA;           L 1120 175&#xA;           L 1120 490&#xA;           L 540 490 Z" fill="#22C55E" opacity="0.06"></path>
+
+  
+  <g>
+    <rect x="960" y="150" width="150" height="76" rx="8" fill="#12141D" stroke="#2A2D38" stroke-width="1"></rect>
+    <text x="972" y="176" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="500" fill="#9AA0A6" letter-spacing="0.06em">CLV</text>
+    <text x="972" y="212" font-family="&#39;JetBrains Mono&#39;, ui-monospace, monospace" font-size="28" font-weight="700" fill="#22C55E">+2.8%</text>
+  </g>
+
+  
+  <g>
+    <rect x="620" y="310" width="170" height="76" rx="8" fill="#12141D" stroke="#2A2D38" stroke-width="1"></rect>
+    <text x="632" y="336" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="500" fill="#9AA0A6" letter-spacing="0.06em">ROI 30d</text>
+    <text x="632" y="372" font-family="&#39;JetBrains Mono&#39;, ui-monospace, monospace" font-size="28" font-weight="700" fill="#22C55E">+4.2%</text>
+  </g>
+
+  
+  <text x="1140" y="590" text-anchor="end" font-family="&#39;JetBrains Mono&#39;, ui-monospace, monospace" font-size="14" fill="#9AA0A6">
+    sportslab.dev
+  </text>
+</svg>
