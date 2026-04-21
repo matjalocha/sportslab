@@ -1,0 +1,60 @@
+# Docker build context hygiene. Build from repo root:
+#   docker build -f apps/api/Dockerfile -t sportslab/api:dev .
+
+# Python
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+**/.pytest_cache/
+**/.mypy_cache/
+**/.ruff_cache/
+**/.coverage
+**/htmlcov/
+**/*.egg-info/
+
+# Virtualenvs
+.venv/
+venv/
+**/.venv/
+
+# OS / editor
+.DS_Store
+**/.DS_Store
+.idea/
+.vscode/
+
+# Git
+.git/
+.gitignore
+
+# Secrets (defence in depth — these should never be on disk, but block them anyway)
+.env
+.env.*
+**/.env
+**/.env.*
+secrets.json
+.doppler/
+
+# Tests and local DB files — Dockerfile rebuilds them if needed
+**/tests/
+**/test.db
+**/local.db
+**/*.sqlite
+**/*.sqlite3
+
+# Research and docs (not needed at runtime)
+research/
+docs/
+ideas/
+notebooks/
+
+# Data artifacts
+data/
+models/*.pkl
+models/*.joblib
+mlruns/
+artifacts/
+
+# CI / tooling
+.github/
+.pre-commit-config.yaml
