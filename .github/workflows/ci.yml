@@ -77,3 +77,30 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm -r lint
       - run: pnpm -r build
+
+  docker-compose-smoke:
+    name: Docker Compose smoke test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Copy .env.docker
+        run: cp .env.docker.example .env.docker
+
+      - name: Validate compose config
+        run: docker compose --env-file .env.docker config >/dev/null
+
+      - name: docker compose up postgres
+        run: docker compose --env-file .env.docker up -d postgres
+
+      - name: Wait for postgres healthy
+        run: timeout 60 bash -c 'until docker compose exec -T postgres pg_isready -U sportslab; do sleep 2; done'
+
+      - name: Compose logs on failure
+        if: failure()
+        run: docker compose logs
+
+      - name: Tear down
+        if: always()
+        run: docker compose down -v
+      # Full API build smoke skipped -- requires apps/api/Dockerfile from SPO-124.

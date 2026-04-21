@@ -111,6 +111,7 @@ node_modules/
 .env.production
 .env.development
 .env.test
+.env.docker
 
 # ──────────────────────────────────────────
 # Data & Models (never commit)
