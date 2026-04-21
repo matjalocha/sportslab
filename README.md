@@ -96,6 +96,31 @@ uv run pytest packages/ml-in-sports --cov --cov-report=html
 cd packages/ml-in-sports && uv run alembic upgrade head
 ```
 
+## Local Development (Docker)
+
+### Prerequisites
+- Docker + Docker Compose
+- Make (macOS: built-in, Windows: via Git Bash or `choco install make`)
+
+### Quick start
+1. Copy `.env.docker.example` -> `.env.docker`, fill secrets (Clerk keys, etc.)
+2. `make up` -- starts Postgres, API, MLflow
+3. `make migrate` -- apply Alembic migrations (after A-09)
+4. `make healthcheck` -- verify API up
+5. Open http://localhost:8000/api/v1/health
+
+### Common commands
+- `make logs` -- tail API logs
+- `make shell` -- bash shell inside API container
+- `make psql` -- psql shell
+- `make test` -- run pytest inside container
+- `make down` -- stop services (preserves volumes)
+- `make clean` -- nuke volumes (destructive, asks for confirmation)
+
+### Notes
+- The `docker-compose.override.yml` mounts `apps/api/src` and `packages/` for hot reload via `uvicorn --reload`.
+- Full stack requires `apps/api/Dockerfile` (SPO-124). Running `make up` without it will fail to build the `api` service -- start with `docker compose up -d postgres mlflow` meanwhile.
+
 ## Project tracking
 
 Linear workspace: [sportslab](https://linear.app/sportslab) (team key: SPO)
