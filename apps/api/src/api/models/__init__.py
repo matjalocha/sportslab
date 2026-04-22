@@ -9,6 +9,7 @@ from api.models.users import (
     UserProfile,
     UserProfileUpdate,
 )
+from api.models.webhooks import WebhookErrorResponse, WebhookResponse
 
 __all__ = [
     "ErrorResponse",
@@ -19,4 +20,6 @@ __all__ = [
     "UserBetCreate",
     "UserProfile",
     "UserProfileUpdate",
+    "WebhookErrorResponse",
+    "WebhookResponse",
 ]

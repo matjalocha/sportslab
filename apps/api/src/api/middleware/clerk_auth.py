@@ -32,7 +32,17 @@ from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoin
 from api.config import Settings
 
 _JWKS_TTL_SECONDS = 3_600  # 1 hour
-_PUBLIC_PATH_PREFIXES = ("/api/v1/health", "/docs", "/openapi.json", "/redoc")
+# ``/api/v1/webhooks/*`` bypasses Clerk JWT auth because each webhook carries
+# its own provider-specific signature (Svix for Clerk, HMAC for Stripe). No
+# Clerk session exists when Stripe or Clerk's own webhook dispatcher POSTs
+# to us, so enforcing Bearer auth would 401 every legitimate delivery.
+_PUBLIC_PATH_PREFIXES = (
+    "/api/v1/health",
+    "/api/v1/webhooks",
+    "/docs",
+    "/openapi.json",
+    "/redoc",
+)
 
 _logger = structlog.get_logger(__name__)
 

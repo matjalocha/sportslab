@@ -19,6 +19,8 @@ dependencies = [
     "python-jose[cryptography]>=3.3,<4.0",  # JWT verification against Clerk JWKS
     "structlog>=24.4,<25.0",
     "sqlalchemy>=2.0,<3.0",
+    "svix>=1.24,<2.0",              # Clerk webhook signature verification (Svix standard)
+    "stripe>=10.0,<12.0",           # Stripe SDK + webhook signature verification
     # Needed for ``ZoneInfo("Europe/Warsaw")`` on Windows hosts and on
     # slim Docker images where the OS tzdata is absent. Tiny (~400 kB)
     # and a runtime hard dep because ``predictions.py`` requires it at import.
