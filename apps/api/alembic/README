@@ -1,0 +1,13 @@
+Alembic migrations for the SportsLab API.
+
+- Run from monorepo root:
+    uv run alembic -c apps/api/alembic.ini upgrade head
+- Generate a new revision from ORM diff:
+    uv run alembic -c apps/api/alembic.ini revision -m "description" --autogenerate
+- Downgrade one step:
+    uv run alembic -c apps/api/alembic.ini downgrade -1
+
+The database URL is read from the ``SPORTSLAB_DATABASE_URL`` environment
+variable (see ``apps/api/src/api/config.py``). If unset, migrations run
+against ``sqlite:///./local.db`` as a dev convenience. CI / prod deploys
+always set the env var explicitly.
