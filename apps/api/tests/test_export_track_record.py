@@ -35,9 +35,7 @@ _EXPORTER_PATH = _MONOREPO_ROOT / "scripts" / "export_track_record.py"
 
 def _load_exporter() -> ModuleType:
     """Load the exporter script as a module for direct function access."""
-    spec = importlib.util.spec_from_file_location(
-        "export_track_record", _EXPORTER_PATH
-    )
+    spec = importlib.util.spec_from_file_location("export_track_record", _EXPORTER_PATH)
     assert spec is not None and spec.loader is not None
     module = importlib.util.module_from_spec(spec)
     sys.modules["export_track_record"] = module
@@ -89,9 +87,7 @@ def test_cli_force_stub_overrides_db_url(
 ) -> None:
     """``--force-stub`` wins over an env-configured DB -- ops escape hatch."""
     output = tmp_path / "track_record_latest.json"
-    monkeypatch.setenv(
-        "SPORTSLAB_DATABASE_URL", "postgresql://nonexistent/not_a_real_db"
-    )
+    monkeypatch.setenv("SPORTSLAB_DATABASE_URL", "postgresql://nonexistent/not_a_real_db")
 
     # Without --force-stub this would try to connect and blow up. With it,
     # we never touch the DB at all.
@@ -102,9 +98,7 @@ def test_cli_force_stub_overrides_db_url(
     assert payload["status"] == "starting_soon"
 
 
-def test_real_report_aggregates_seeded_sqlite(
-    exporter: ModuleType, tmp_path: Path
-) -> None:
+def test_real_report_aggregates_seeded_sqlite(exporter: ModuleType, tmp_path: Path) -> None:
     """Seed a SQLite DB with settled bets; verify shape + basic correctness."""
     db_path = tmp_path / "seed.db"
     db_url = f"sqlite:///{db_path}"

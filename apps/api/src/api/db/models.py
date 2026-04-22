@@ -69,18 +69,12 @@ class User(Base):
     bankroll_eur: Mapped[float] = mapped_column(
         Float, nullable=False, default=1000.0, server_default="1000.0"
     )
-    leagues_selected: Mapped[list[str]] = mapped_column(
-        JSON, nullable=False, default=list
-    )
-    markets_selected: Mapped[list[str]] = mapped_column(
-        JSON, nullable=False, default=list
-    )
+    leagues_selected: Mapped[list[str]] = mapped_column(JSON, nullable=False, default=list)
+    markets_selected: Mapped[list[str]] = mapped_column(JSON, nullable=False, default=list)
     odds_format: Mapped[str] = mapped_column(
         String(16), nullable=False, default="decimal", server_default="decimal"
     )
-    notifications: Mapped[dict[str, Any]] = mapped_column(
-        JSON, nullable=False, default=dict
-    )
+    notifications: Mapped[dict[str, Any]] = mapped_column(JSON, nullable=False, default=dict)
     status: Mapped[str] = mapped_column(
         String(16), nullable=False, default="active", server_default="active"
     )
@@ -89,9 +83,7 @@ class User(Base):
     )
     last_active_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
-    bets: Mapped[list["UserBet"]] = relationship(
-        back_populates="user", cascade="all, delete-orphan"
-    )
+    bets: Mapped[list[UserBet]] = relationship(back_populates="user", cascade="all, delete-orphan")
 
     __table_args__ = (
         Index("ix_users_status", "status"),
@@ -123,9 +115,7 @@ class UserBet(Base):
     stake_eur: Mapped[float] = mapped_column(Float, nullable=False)
     odds: Mapped[float] = mapped_column(Float, nullable=False)
     bookmaker: Mapped[str] = mapped_column(String(64), nullable=False)
-    placed_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False, index=True
-    )
+    placed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, index=True)
     outcome: Mapped[str] = mapped_column(
         String(16), nullable=False, default="pending", server_default="pending"
     )

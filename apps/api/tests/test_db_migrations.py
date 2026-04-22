@@ -113,9 +113,7 @@ def test_users_table_has_expected_columns(
         "created_at",
         "last_active_at",
     }
-    assert expected_subset.issubset(columns), (
-        f"missing user columns: {expected_subset - columns}"
-    )
+    assert expected_subset.issubset(columns), f"missing user columns: {expected_subset - columns}"
 
 
 def test_webhook_events_unique_constraint(

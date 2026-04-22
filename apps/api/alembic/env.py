@@ -24,13 +24,13 @@ import os
 from logging.config import fileConfig
 
 from alembic import context
-from sqlalchemy import engine_from_config, pool
 
 # Register all ORM models on Base.metadata. The import is required even
 # though the symbol is only used via ``Base.metadata`` -- without it,
 # autogenerate sees an empty schema.
-from api.db import Base  # noqa: F401
+from api.db import Base
 from api.db import models as _models  # noqa: F401
+from sqlalchemy import engine_from_config, pool
 
 # Alembic Config object — pulls values from alembic.ini.
 config = context.config
@@ -52,11 +52,7 @@ def _resolve_database_url() -> str:
     API is synchronous. The prod runtime connection string is untouched.
     """
     x_args = context.get_x_argument(as_dictionary=True)
-    url = (
-        x_args.get("db_url")
-        or os.environ.get("SPORTSLAB_DATABASE_URL")
-        or "sqlite:///./local.db"
-    )
+    url = x_args.get("db_url") or os.environ.get("SPORTSLAB_DATABASE_URL") or "sqlite:///./local.db"
     # Drop async drivers -- Alembic needs a sync engine.
     url = url.replace("postgresql+asyncpg", "postgresql+psycopg")
     url = url.replace("sqlite+aiosqlite", "sqlite")

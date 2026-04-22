@@ -129,9 +129,7 @@ def build_stub_report(since: date, window_days: int) -> TrackRecordReport:
     )
 
 
-def build_report_from_db(
-    db_url: str, since: date, window_days: int
-) -> TrackRecordReport:
+def build_report_from_db(db_url: str, since: date, window_days: int) -> TrackRecordReport:
     """Aggregate settled bets from the database into a full report.
 
     Kept deliberately simple: we rely on the ``user_bets`` table (see

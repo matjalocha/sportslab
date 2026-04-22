@@ -117,16 +117,12 @@ def upgrade() -> None:
     op.create_index("ix_user_bets_user_id", "user_bets", ["user_id"])
     op.create_index("ix_user_bets_match_id", "user_bets", ["match_id"])
     op.create_index("ix_user_bets_placed_at", "user_bets", ["placed_at"])
-    op.create_index(
-        "ix_user_bets_user_placed_at", "user_bets", ["user_id", "placed_at"]
-    )
+    op.create_index("ix_user_bets_user_placed_at", "user_bets", ["user_id", "placed_at"])
     op.create_index("ix_user_bets_outcome", "user_bets", ["outcome"])
 
     op.create_table(
         "webhook_events",
-        sa.Column(
-            "id", sa.Integer(), primary_key=True, autoincrement=True
-        ),
+        sa.Column("id", sa.Integer(), primary_key=True, autoincrement=True),
         sa.Column("provider", sa.String(length=32), nullable=False),
         sa.Column("event_id", sa.String(length=128), nullable=False),
         sa.Column(
@@ -135,9 +131,7 @@ def upgrade() -> None:
             nullable=False,
             server_default=sa.func.now(),
         ),
-        sa.UniqueConstraint(
-            "provider", "event_id", name="uq_provider_event"
-        ),
+        sa.UniqueConstraint("provider", "event_id", name="uq_provider_event"),
     )
     op.create_index(
         "ix_webhook_events_provider_received",
