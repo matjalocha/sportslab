@@ -21,6 +21,7 @@ dependencies = [
     "sqlalchemy>=2.0,<3.0",
     "svix>=1.24,<2.0",              # Clerk webhook signature verification (Svix standard)
     "stripe>=10.0,<12.0",           # Stripe SDK + webhook signature verification
+    "alembic>=1.13,<2.0",           # Schema migrations (see apps/api/alembic/)
     # Needed for ``ZoneInfo("Europe/Warsaw")`` on Windows hosts and on
     # slim Docker images where the OS tzdata is absent. Tiny (~400 kB)
     # and a runtime hard dep because ``predictions.py`` requires it at import.

@@ -59,6 +59,29 @@ uv run pytest apps/api/tests/
 uv run pytest apps/api/tests/ --cov=apps/api/src --cov-report=term-missing
 ```
 
+## Database migrations
+
+Schema lives in `src/api/db/models.py`; migrations are managed with
+Alembic. The database URL comes from `SPORTSLAB_DATABASE_URL` (falls
+back to `sqlite:///./local.db` if unset -- convenient for local dev,
+never acceptable in CI or prod).
+
+```bash
+# Apply all pending migrations (prod-safe, idempotent)
+uv run alembic -c apps/api/alembic.ini upgrade head
+
+# Generate a new revision from the ORM diff (review before committing!)
+uv run alembic -c apps/api/alembic.ini revision \
+    -m "short description" --autogenerate
+
+# Roll back one revision
+uv run alembic -c apps/api/alembic.ini downgrade -1
+```
+
+Async drivers (`+asyncpg`, `+aiosqlite`) used by the runtime are
+automatically coerced to their sync equivalents inside `alembic/env.py`;
+the stored URL stays unchanged.
+
 ## Docker
 
 ```bash
