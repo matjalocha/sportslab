@@ -38,6 +38,7 @@ from api.config import Settings, get_settings
 from api.models.admin import (
     AdminUser,
     InfraMetric,
+    InviteUserRequest,
     ModelRollbackRequest,
     ModelRollbackResponse,
     ModelVersion,
@@ -72,6 +73,12 @@ class AdminProvider(ABC):
     @abstractmethod
     async def trigger_retrain(self) -> dict[str, str]: ...
 
+    @abstractmethod
+    async def invite_user(self, request: InviteUserRequest) -> AdminUser: ...
+
+    @abstractmethod
+    async def promote_staging(self) -> ModelVersion: ...
+
 
 class StubAdminProvider(AdminProvider):
     """Deterministic in-memory fixtures.
@@ -85,12 +92,16 @@ class StubAdminProvider(AdminProvider):
     # Class-level state so the stub survives request-scoped instances.
     _users: ClassVar[dict[str, AdminUser]] = {}
     _deployed_version: ClassVar[str] = "v2.4.1"
+    # ``None`` means "no model currently in staging" -- promote returns 409.
+    # Seeded with a realistic candidate so the happy-path test is trivial.
+    _staging_version: ClassVar[str | None] = "v2.5.0-rc1"
 
     @classmethod
     def reset(cls) -> None:
         """Wipe state. Tests only -- never call from production code."""
         cls._users.clear()
         cls._deployed_version = "v2.4.1"
+        cls._staging_version = "v2.5.0-rc1"
         cls._seed()
 
     @classmethod
@@ -262,6 +273,67 @@ class StubAdminProvider(AdminProvider):
         # synthetic job id so the UI can show "Retrain queued".
         return {"status": "queued", "jobId": f"retrain_{uuid.uuid4().hex[:8]}"}
 
+    async def invite_user(self, request: InviteUserRequest) -> AdminUser:
+        """Create an ``invited`` user record and (in prod) send the email.
+
+        Stub caveat: the real implementation delegates the email send to
+        the transactional-email provider (Resend / Postmark) and records
+        the delivery attempt in an audit log. Here we just materialise the
+        record so the admin UI's user list updates immediately.
+        """
+        existing = next(
+            (user for user in self._users.values() if user.email == request.email),
+            None,
+        )
+        if existing is not None:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail=f"User with email {request.email} already exists",
+            )
+        now = datetime.now(UTC)
+        invited = AdminUser(
+            id=f"user_invited_{uuid.uuid4().hex[:8]}",
+            email=request.email,
+            full_name=None,
+            plan=request.plan,
+            role="user",
+            status="invited",
+            last_active_at=None,
+            mrr_eur=0.0,
+            bets_tracked=0,
+            joined_at=now,
+        )
+        self._users[invited.id] = invited
+        return invited
+
+    async def promote_staging(self) -> ModelVersion:
+        """Swap the staging model into production.
+
+        A 409 here means the staging slot is empty -- either no candidate
+        has been trained yet, or it was already promoted. Forces the admin
+        UI to display "no candidate available" rather than silently
+        re-promoting the current production model.
+        """
+        staging = type(self)._staging_version
+        if staging is None:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="No staging model available for promotion",
+            )
+        type(self)._deployed_version = staging
+        type(self)._staging_version = None
+        now = datetime.now(UTC)
+        return ModelVersion(
+            version=staging,
+            deployed_at=now,
+            status="deployed",
+            ece_overall=0.019,
+            log_loss=0.608,
+            brier=0.212,
+            trained_on=now.date().isoformat(),
+            features_count=87,
+        )
+
 
 _DEFAULT_PROVIDER: AdminProvider = StubAdminProvider()
 
@@ -405,3 +477,45 @@ async def trigger_retrain(
     flow-run uuid.
     """
     return await provider.trigger_retrain()
+
+
+@router.post(
+    "/users",
+    response_model=AdminUser,
+    response_model_by_alias=True,
+    status_code=status.HTTP_201_CREATED,
+    summary="Invite a new user (admin-only)",
+)
+async def invite_user(
+    request_body: InviteUserRequest,
+    admin_id: Annotated[str, Depends(require_admin)],
+    provider: Annotated[AdminProvider, Depends(get_admin_provider)],
+) -> AdminUser:
+    """Create a ``status="invited"`` user record and dispatch the invite email.
+
+    The stub skips the email send; the production implementation queues a
+    transactional-email job via the configured provider (Resend / Postmark)
+    and records the attempt for audit. Returns the freshly-created admin-
+    console view so the UI can append the row without a follow-up fetch.
+    """
+    return await provider.invite_user(request_body)
+
+
+@router.post(
+    "/model/promote",
+    response_model=ModelVersion,
+    response_model_by_alias=True,
+    summary="Promote the staging model into production",
+)
+async def promote_staging_model(
+    admin_id: Annotated[str, Depends(require_admin)],
+    provider: Annotated[AdminProvider, Depends(get_admin_provider)],
+) -> ModelVersion:
+    """Promote the current staging model candidate into production.
+
+    Returns 409 when the staging slot is empty so the admin UI can render
+    "no candidate available" rather than silently re-promoting the live
+    model. Successful promotion returns the new ``ModelVersion`` so the
+    dashboard reflects the swap immediately.
+    """
+    return await provider.promote_staging()

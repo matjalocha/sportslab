@@ -67,6 +67,9 @@ class UsersProvider(ABC):
     @abstractmethod
     async def create_bet(self, user_id: str, bet: UserBetCreate) -> UserBet: ...
 
+    @abstractmethod
+    async def delete_bet(self, user_id: str, bet_id: str) -> None: ...
+
 
 class StubUsersProvider(UsersProvider):
     """In-memory dict-backed provider for dev, CI, and tests.
@@ -161,6 +164,19 @@ class StubUsersProvider(UsersProvider):
         )
         self._bets.setdefault(user_id, []).append(new_bet)
         return new_bet
+
+    async def delete_bet(self, user_id: str, bet_id: str) -> None:
+        """Remove ``bet_id`` from the user's log if present.
+
+        Idempotent: a second call (or a delete of an unknown id) is a
+        no-op so clients retrying on flaky networks don't trip 404s. We
+        deliberately do NOT raise when the user profile is missing --
+        "nothing to delete" is the correct response either way.
+        """
+        bets = self._bets.get(user_id)
+        if not bets:
+            return
+        self._bets[user_id] = [bet for bet in bets if bet.id != bet_id]
 
 
 _DEFAULT_PROVIDER = StubUsersProvider()
@@ -305,3 +321,23 @@ async def create_my_bet(
     (updating outcome / pnl_eur) happens via a separate endpoint in A-09.
     """
     return await provider.create_bet(user_id, bet)
+
+
+@router.delete(
+    "/users/me/bets/{bet_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    summary="Delete a tracked bet from the authenticated user's log",
+)
+async def delete_my_bet(
+    bet_id: str,
+    provider: Annotated[UsersProvider, Depends(get_users_provider)],
+    user_id: Annotated[str, Depends(get_current_user_id)],
+) -> None:
+    """Remove a bet from the user's personal log.
+
+    Idempotent by design -- the client may retry on a flaky connection,
+    and deleting an already-deleted id returns 204 rather than 404. The
+    alternative (strict 404 on miss) forces the UI to carry "maybe already
+    gone" logic for no user-visible benefit.
+    """
+    await provider.delete_bet(user_id, bet_id)
