@@ -164,3 +164,21 @@ class ModelRollbackResponse(BaseModel):
     rolled_back_from: str = Field(..., alias="rolledBackFrom")
     rolled_back_to: str = Field(..., alias="rolledBackTo")
     at: datetime
+
+
+class InviteUserRequest(BaseModel):
+    """Body for ``POST /admin/users`` -- founder-invited alpha/pro accounts.
+
+    Admin-only flow: the caller supplies an email and optional initial
+    plan; the backend creates a ``status="invited"`` record and (in
+    production) dispatches the invite email via the transactional-email
+    provider. ``notes`` is a private admin-facing memo (why they were
+    invited, which partner referred them) and is NOT surfaced to the
+    invitee.
+    """
+
+    model_config = ConfigDict(populate_by_name=True)
+
+    email: EmailStr
+    plan: Plan = "alpha"
+    notes: str | None = None
