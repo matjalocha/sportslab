@@ -21,7 +21,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from api.config import Settings, get_settings
 from api.logging_config import configure_logging
 from api.middleware import ClerkAuthMiddleware
-from api.routers import health
+from api.routers import health, predictions
 
 _logger = structlog.get_logger(__name__)
 
@@ -73,6 +73,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.add_middleware(ClerkAuthMiddleware, settings=resolved)
 
     app.include_router(health.router, prefix="/api/v1")
+    app.include_router(predictions.router, prefix="/api/v1")
 
     return app
 
