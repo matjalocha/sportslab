@@ -28,6 +28,7 @@ from zoneinfo import ZoneInfo
 
 from fastapi.testclient import TestClient
 from svix.webhooks import Webhook as SvixWebhook
+
 from tests.e2e.conftest import (
     E2E_ADMIN_ID,
     E2E_CLERK_WEBHOOK_SECRET,
