@@ -211,6 +211,25 @@ def build_report_from_db(
     )
 
 
+def _coerce_to_date(value: Any) -> date:
+    """Turn whatever SQLite / Postgres hands us into a plain ``date``.
+
+    SQLite returns ``DateTime`` columns as ISO-8601 strings unless a
+    ``detect_types=PARSE_DECLTYPES`` flag is set on the connection; we
+    don't set that because the production target is Postgres where the
+    driver returns real ``datetime`` objects. This helper hides the
+    dialect difference so the aggregation code stays clean.
+    """
+    if isinstance(value, datetime):
+        return value.date()
+    if isinstance(value, date):
+        return value
+    # ISO-8601 string -- "YYYY-MM-DDTHH:MM:SS[.ffffff][+00:00]".
+    # Use ``.split("T")`` for robustness against driver quirks that might
+    # strip the trailing zone.
+    return date.fromisoformat(str(value).split("T", 1)[0])
+
+
 def _build_equity_curve(rows: list[Any], since: date) -> list[EquityPoint]:
     """Collapse settled bets into one cumulative-PnL point per day.
 
@@ -220,9 +239,7 @@ def _build_equity_curve(rows: list[Any], since: date) -> list[EquityPoint]:
     """
     by_day: dict[date, float] = {}
     for row in rows:
-        placed_date = (
-            row.placed_at.date() if hasattr(row.placed_at, "date") else row.placed_at
-        )
+        placed_date = _coerce_to_date(row.placed_at)
         by_day[placed_date] = by_day.get(placed_date, 0.0) + (row.pnl_eur or 0.0)
 
     cumulative = 0.0
@@ -246,9 +263,7 @@ def _build_monthly(rows: list[Any]) -> list[MonthlyStat]:
     """Per-month breakdown; months with zero settled bets are omitted."""
     buckets: dict[str, list[Any]] = {}
     for row in rows:
-        placed_date = (
-            row.placed_at.date() if hasattr(row.placed_at, "date") else row.placed_at
-        )
+        placed_date = _coerce_to_date(row.placed_at)
         key = f"{placed_date.year:04d}-{placed_date.month:02d}"
         buckets.setdefault(key, []).append(row)
 
